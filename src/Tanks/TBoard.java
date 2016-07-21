@@ -50,7 +50,7 @@ public class TBoard extends javax.swing.JFrame  {
         }
 
         spotz[0][0].occupySpot(new TankPiece(2, 0, 0 , 2));
-        spotz[9][9].occupySpot(new TankPiece(1, 9, 9 , 4));
+        spotz[9][9].occupySpot(new TankPiece(1, 9, 9 , 1));
  
     }
     
