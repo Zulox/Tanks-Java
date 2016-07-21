@@ -11,11 +11,11 @@ public class TankPiece {
     private int x;
     private int y;
 
-    public TankPiece(int team, int x, int y) {
+    public TankPiece(int team, int y, int x) {
         super();
         this.team = team;
-        this.x = x;
         this.y = y;
+        this.x = x;
     }
 
     public int getX() {
@@ -44,23 +44,54 @@ public class TankPiece {
 
 
     //check wheter the new spot is valid move for individual pieces
-    public boolean ValidMove(int x, int y) {
+    public boolean ValidMove(int pmove) {
+        
+        if( (pmove >= 0 ) && (pmove <= 9 )){
+        return true;
+        }
         return false;
+        
+        
     }
     
     public void MoveUp(Spots[][] spotz) {
-       
+        int tempY = this.getY();
+        tempY+= 1;
+        
+        if(ValidMove(tempY)){
+            setY(tempY);
+        }
+        
     }
    
-    public void MoveRight(int x, int y, Spots[][] spotz) {
-       
-    }
-    public void MoveDown(int x, int y, Spots[][] spotz) {
+
+    public void MoveDown(Spots[][] spotz) {
+        
+        int tempY = this.getY();
+        tempY-= 1;
+        
+        if(ValidMove(tempY)){
+            setY(tempY);
+        }
        
     }
     
-    public void MoveLeft(int x, int y, Spots[][] spotz) {
-       
+    public void MoveRight(Spots[][] spotz) {
+        int tempX = this.getX();
+        tempX+= 1;
+        
+        if(ValidMove(tempX)){
+            setX(tempX);
+        }
+    }
+    
+    public void MoveLeft(Spots[][] spotz) {
+        int tempX = this.getX();
+        tempX+= 1;
+        
+        if(ValidMove(tempX)){
+            setX(tempX);
+        }
     }
 
   

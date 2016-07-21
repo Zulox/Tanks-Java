@@ -25,7 +25,8 @@ public class TBoard extends javax.swing.JFrame  {
     public TBoard() {
         initComponents();
         addbutton();
-   
+        initializePiece();
+        maskingButton();
     }
 
 
@@ -36,6 +37,38 @@ public class TBoard extends javax.swing.JFrame  {
                 btn[y][x] = new JButton();
                 pnl_Board.add(btn[y][x]);
                 btn[y][x].setBackground(new java.awt.Color(255, 255, 255));
+            }
+        }
+    }
+    
+    private void initializePiece() {
+
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
+                spotz[y][x] = new Spots();
+            }
+        }
+
+        spotz[0][0].occupySpot(new TankPiece(2, 0, 0));
+        spotz[9][9].occupySpot(new TankPiece(1, 9, 9));
+ 
+    }
+    
+     private void maskingButton() {
+        int teams = 0;
+        int types = 0;
+       
+
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
+
+                if (spotz[y][x].isOccupied()) {
+                    teams = spotz[y][x].piece.getTeam();
+                    btn[y][x].setText("" + teams);
+                    
+                } else {
+                    btn[y][x].setText("  ");
+                }
             }
         }
     }
