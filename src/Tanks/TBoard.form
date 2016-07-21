@@ -24,7 +24,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="pnl_Board" pref="648" max="32767" attributes="0"/>
+              <Component id="pnl_Board" pref="880" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="pnl_info" min="-2" max="-2" attributes="0"/>
           </Group>
@@ -78,7 +78,7 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="lbl_Note" min="-2" pref="76" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
-                  <Component id="jLabel2" pref="38" max="32767" attributes="0"/>
+                  <Component id="jLabel2" pref="120" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="lbl_Interval" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>

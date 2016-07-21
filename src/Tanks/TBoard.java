@@ -49,14 +49,14 @@ public class TBoard extends javax.swing.JFrame  {
             }
         }
 
-        spotz[0][0].occupySpot(new TankPiece(2, 0, 0));
-        spotz[9][9].occupySpot(new TankPiece(1, 9, 9));
+        spotz[0][0].occupySpot(new TankPiece(2, 0, 0 , 2));
+        spotz[9][9].occupySpot(new TankPiece(1, 9, 9 , 4));
  
     }
     
      private void maskingButton() {
         int teams = 0;
-        int types = 0;
+        int state = 0;
        
 
         for (int y = 0; y < 10; y++) {
@@ -64,7 +64,16 @@ public class TBoard extends javax.swing.JFrame  {
 
                 if (spotz[y][x].isOccupied()) {
                     teams = spotz[y][x].piece.getTeam();
-                    btn[y][x].setText("" + teams);
+                    state = spotz[y][x].piece.getState();
+                    
+                     try {
+                        Image img = ImageIO.read(getClass().getResource("/Tank/Image/Tank" + teams + state + ".png"));
+                        Image newimg = img.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
+                        btn[y][x].setIcon(new ImageIcon(newimg));
+
+                    } catch (IOException ex) {
+                    }
+                 
                     
                 } else {
                     btn[y][x].setText("  ");
@@ -164,7 +173,7 @@ public class TBoard extends javax.swing.JFrame  {
                 .addGap(18, 18, 18)
                 .addComponent(lbl_Note, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(54, 54, 54)
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbl_Interval)
                 .addGap(39, 39, 39)
@@ -177,7 +186,7 @@ public class TBoard extends javax.swing.JFrame  {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(pnl_Board, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE)
+                .addComponent(pnl_Board, javax.swing.GroupLayout.DEFAULT_SIZE, 880, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnl_info, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );

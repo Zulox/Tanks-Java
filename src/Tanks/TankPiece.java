@@ -10,12 +10,14 @@ public class TankPiece {
     private int team;
     private int x;
     private int y;
+    private int state;
 
-    public TankPiece(int team, int y, int x) {
+    public TankPiece(int team, int y, int x, int state) {
         super();
         this.team = team;
         this.y = y;
         this.x = x;
+        this.state = state;
     }
 
     public int getX() {
@@ -40,6 +42,14 @@ public class TankPiece {
 
     public void setTeam(int team) {
         this.team = team;
+    }
+    
+    public int getState() {
+        return this.state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
 
