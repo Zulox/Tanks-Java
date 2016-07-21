@@ -10,7 +10,7 @@ public class Spots {
 
     int x;
     int y;
-    Piece piece;
+    TankPiece piece;
 
     public Spots() {
 
@@ -18,7 +18,7 @@ public class Spots {
     }
 
     //occupy the spot
-    public void occupySpot(Piece piece) {
+    public void occupySpot(TankPiece piece) {
         this.piece = piece;
     }
 
@@ -31,8 +31,8 @@ public class Spots {
     }
 
     //delete current pieces in the spot, but return the old piece
-    public Piece releaseSpot() {
-        Piece releasedPiece = this.piece;
+    public TankPiece releaseSpot() {
+        TankPiece releasedPiece = this.piece;
         this.piece = null;
         return releasedPiece;
     }

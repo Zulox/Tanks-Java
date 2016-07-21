@@ -5,14 +5,13 @@
  */
 package Tanks;
 
-public class Piece {
+public class TankPiece {
 
     private int team;
     private int x;
     private int y;
-    private int types;
 
-    public Piece(int team, int x, int y) {
+    public TankPiece(int team, int x, int y) {
         super();
         this.team = team;
         this.x = x;
@@ -43,17 +42,25 @@ public class Piece {
         this.team = team;
     }
 
-    public int getTypes() {
-        return this.types;
-    }
-
-    public void setTypes(int types) {
-        this.types = types;
-    }
 
     //check wheter the new spot is valid move for individual pieces
-    public boolean ValidMove(int x, int y, Spots[][] spotz) {
+    public boolean ValidMove(int x, int y) {
         return false;
+    }
+    
+    public void MoveUp(Spots[][] spotz) {
+       
+    }
+   
+    public void MoveRight(int x, int y, Spots[][] spotz) {
+       
+    }
+    public void MoveDown(int x, int y, Spots[][] spotz) {
+       
+    }
+    
+    public void MoveLeft(int x, int y, Spots[][] spotz) {
+       
     }
 
   

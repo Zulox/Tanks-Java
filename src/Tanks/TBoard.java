@@ -14,267 +14,33 @@ import java.awt.event.*;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-public class ZBoard extends javax.swing.JFrame implements ActionListener {
+public class TBoard extends javax.swing.JFrame  {
 
-    private JButton[][] btn = new JButton[6][7];
-    private Spots[][] spotz = new Spots[6][7];
+    private JButton[][] btn = new JButton[10][10];
+    private Spots[][] spotz = new Spots[10][10];
 
-    private boolean ButtonState = false;
-    private int tempX = 0;
-    private int tempY = 0;
-    private int currentTurn = 1;
-    private int intervals = 0;
-    private boolean gamefinished = false;
+  
 
     //Contstructor Run all function 
-    public ZBoard() {
+    public TBoard() {
         initComponents();
         addbutton();
-        initializePiece();
-        maskingButton();
+   
     }
 
-    //Function to apply icon to occupied buttons
-    private void maskingButton() {
-        int teams = 0;
-        int types = 0;
-        String specialtype = "";
-
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 7; j++) {
-
-                if (spotz[i][j].isOccupied()) {
-                    teams = spotz[i][j].piece.getTeam();
-                    types = spotz[i][j].piece.getTypes();
-                    specialtype = "" + types;
-                    if (types == 2 || types == 3) {
-                        if (teams != currentTurn) {
-                            specialtype = specialtype + "R";
-                        }
-                    }
-
-                    try {
-                        Image img = ImageIO.read(getClass().getResource("/Zaronian/Image/" + teams + specialtype + ".png"));
-                        Image newimg = img.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
-                        btn[i][j].setIcon(new ImageIcon(newimg));
-
-                    } catch (IOException ex) {
-                    }
-
-                } else {
-                    btn[i][j].setText("  ");
-                }
-            }
-        }
-    }
-
-    //Create piece into their own team, type and starting position
-    private void initializePiece() {
-
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 7; j++) {
-                spotz[i][j] = new Spots();
-            }
-        }
-
-        spotz[0][0].occupySpot(new Plus(2, 0, 0));
-        spotz[0][1].occupySpot(new Triangle(2, 0, 1));
-        spotz[0][2].occupySpot(new Chevron(2, 0, 2));
-        spotz[0][3].occupySpot(new Sun(2, 0, 3));
-        spotz[0][4].occupySpot(new Chevron(2, 0, 4));
-        spotz[0][5].occupySpot(new Triangle(2, 0, 5));
-        spotz[0][6].occupySpot(new Plus(2, 0, 6));
-
-        spotz[5][0].occupySpot(new Plus(1, 5, 0));
-        spotz[5][1].occupySpot(new Triangle(1, 5, 1));
-        spotz[5][2].occupySpot(new Chevron(1, 5, 2));
-        spotz[5][3].occupySpot(new Sun(1, 5, 3));
-        spotz[5][4].occupySpot(new Chevron(1, 5, 4));
-        spotz[5][5].occupySpot(new Triangle(1, 5, 5));
-        spotz[5][6].occupySpot(new Plus(1, 5, 6));
-
-    }
 
     //Add button to the JFrame 6*7 as the board
     private void addbutton() {
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 7; j++) {
-
-                btn[i][j] = new JButton();
-                pnl_Board.add(btn[i][j]);
-                btn[i][j].addActionListener((ActionListener) this);/**/
-
-                btn[i][j].setBackground(new java.awt.Color(255, 255, 255));
+        for (int y = 0; y <= 9; y++) {
+            for (int x = 0; x <= 9; x++) {
+                btn[y][x] = new JButton();
+                pnl_Board.add(btn[y][x]);
+                btn[y][x].setBackground(new java.awt.Color(255, 255, 255));
             }
         }
     }
 
-    //Flip the board --called after player finished their turn
-    private void flipboard(int z, int x) {
-        pnl_Board.removeAll();
-
-        if (currentTurn == 1) {
-            for (int i = 0; i < 6; i++) {
-                for (int j = 0; j < 7; j++) {
-                    btn[i][j] = new JButton();
-                    pnl_Board.add(btn[i][j]);
-                    btn[i][j].addActionListener((ActionListener) this);
-                    btn[i][j].setBackground(new java.awt.Color(255, 255, 255));
-                }
-            }
-
-            btn[z][x].setBackground(new java.awt.Color(204, 204, 255));
-
-           
-            if (intervals != 0 && intervals % 3 == 0) {
-                ChangePiece();
-            }
-
-        } else {
-            for (int i = 5; i >= 0; i--) {
-                for (int j = 6; j >= 0; j--) {
-                    btn[i][j] = new JButton();
-                    pnl_Board.add(btn[i][j]);
-                    btn[i][j].addActionListener((ActionListener) this);
-                    btn[i][j].setBackground(new java.awt.Color(255, 255, 255));
-                     btn[z][x].setBackground(new java.awt.Color(255, 204, 204));
-                }
-            }
-
-        }
-
-        maskingButton();
-
-    }
-
-    /*The main game logic, handle things such as
-     -selecting/deselecting you piece
-     -Moving piece
-    
-     */
-    private void ComplexGameLogic(int i, int j) {
-        if (ButtonState == false) {
-            if (spotz[i][j].isOccupied() && spotz[i][j].piece.getTeam() == currentTurn) {
-                tempX = i;
-                tempY = j;
-                //highlight Button Code
-                btn[i][j].setBackground(new java.awt.Color(153, 255, 153));
-                ButtonState = true;
-            } else {
-                lbl_Note.setText("Not your piece");
-            }
-        } else if (tempX == i && tempY == j) {
-            ButtonState = false;
-
-            btn[i][j].setBackground(new java.awt.Color(255, 255, 255));
-
-        } else if (spotz[tempX][tempY].piece.ValidMove(i, j, spotz)) {
-
-            if (spotz[i][j].isOccupied() && spotz[i][j].piece.getTeam() == currentTurn) {
-                lbl_Note.setText("[Same Team]");
-                spotz[tempX][tempY].piece.setX(tempX);
-                spotz[tempX][tempY].piece.setY(tempY);
-
-            } else {
-
-                if (spotz[i][j].isOccupied() && spotz[i][j].piece.getTypes() == 4) {
-
-                    Winthegame(currentTurn);
-                }
-                spotz[i][j].occupySpot(spotz[tempX][tempY].releaseSpot());
-                ButtonState = false;
-
-                btn[tempX][tempY].setBackground(new java.awt.Color(255, 255, 255));
-                if (currentTurn == 1) {
-                    currentTurn = 2;
-                    lbl_Turn.setText("" + currentTurn);
-                    lbl_Turn.setForeground(Color.blue);
-                    btn[i][j].setBackground(Color.blue);
-                    if (gamefinished == false) {
-                        lbl_Note.setText("Valid");
-                        lbl_Note.setForeground(Color.blue);
-                        flipboard(i, j);
-                    }
-
-                } else {
-                    intervals++;
-                    lbl_Interval.setText("" + (intervals + 1));
-                    currentTurn = 1;
-                    lbl_Turn.setText("" + currentTurn);
-                    lbl_Turn.setForeground(Color.red);
-                    btn[i][j].setBackground(Color.blue);
-
-                    if (gamefinished == false) {
-                        lbl_Note.setText("Valid");
-                        lbl_Note.setForeground(Color.red);
-                        flipboard(i, j);
-                    }
-                }
-
-            }
-
-        } else {
-            lbl_Note.setText("Invalid Path");
-        }
-    }
-
-    //Dynamic Button action
-    public void actionPerformed(ActionEvent evt) {
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 7; j++) {
-                if (evt.getSource() == btn[i][j]) {
-                    ComplexGameLogic(i, j);
-
-                }
-            }
-        }
-    }
-
-    //handle what happen if game is won
-    public void Winthegame(int currentTurn) {
-        gamefinished = true;
-        String Msgs = "Player " + currentTurn + " Win";
-        JOptionPane.showMessageDialog(null, Msgs, "GAME OVER", JOptionPane.PLAIN_MESSAGE);
-        lbl_Note.setText(Msgs);
-        lbl_Note.setForeground(new java.awt.Color(0, 153, 153));
-
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 7; j++) {
-                btn[i][j].setEnabled(false);
-            }
-        }
-
-    }
-
-    //handle converting the piece to other type after 3 turns
-    private void ChangePiece() {
-        int team = 0;
-        int types = 0;
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 7; j++) {
-
-                if (spotz[i][j].isOccupied()) {
-                    team = spotz[i][j].piece.getTeam();
-                    types = spotz[i][j].piece.getTypes();
-
-                    if (types == 1) {
-                        spotz[i][j].DeletePiece();
-                        spotz[i][j].occupySpot(new Triangle(team, i, j));
-                    } else if (types == 2) {
-                        spotz[i][j].DeletePiece();
-                        spotz[i][j].occupySpot(new Chevron(team, i, j));
-                    } else if (types == 3) {
-                        spotz[i][j].DeletePiece();
-                        spotz[i][j].occupySpot(new Plus(team, i, j));
-                    } else {
-                    }
-
-                }
-
-            }
-        }
-
-    }
+ 
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -298,7 +64,7 @@ public class ZBoard extends javax.swing.JFrame implements ActionListener {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         pnl_Board.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        pnl_Board.setLayout(new java.awt.GridLayout(6, 7));
+        pnl_Board.setLayout(new java.awt.GridLayout(10, 10));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -394,7 +160,7 @@ public class ZBoard extends javax.swing.JFrame implements ActionListener {
     private void btn_NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_NewActionPerformed
         this.dispose();
 
-        new ZBoard().setVisible(true);
+        new TBoard().setVisible(true);
     }//GEN-LAST:event_btn_NewActionPerformed
 
     private void btn_howActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_howActionPerformed
@@ -418,20 +184,21 @@ public class ZBoard extends javax.swing.JFrame implements ActionListener {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ZBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ZBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ZBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ZBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ZBoard().setVisible(true);
+                new TBoard().setVisible(true);
             }
         });
     }
