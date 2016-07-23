@@ -64,44 +64,50 @@ public class TankPiece {
         
     }
     
-    public void MoveUp(Spots[][] spotz) {
-        int tempY = this.getY();
-        tempY+= 1;
-        
-        if(ValidMove(tempY)){
-            setY(tempY);
-        }
-        
-    }
-   
-
-    public void MoveDown(Spots[][] spotz) {
-        
+    public boolean MoveUp() {
         int tempY = this.getY();
         tempY-= 1;
         
         if(ValidMove(tempY)){
             setY(tempY);
+            return true;
         }
-       
+        return false;
+    }
+   
+
+    public boolean MoveDown() {
+        
+        int tempY = this.getY();
+        tempY+= 1;
+        
+        if(ValidMove(tempY)){
+            setY(tempY);
+            return true;
+        }
+       return false;
     }
     
-    public void MoveRight(Spots[][] spotz) {
+    public boolean MoveRight() {
         int tempX = this.getX();
         tempX+= 1;
         
         if(ValidMove(tempX)){
             setX(tempX);
+              return true;
         }
+        return false;
     }
     
-    public void MoveLeft(Spots[][] spotz) {
+    public boolean MoveLeft() {
         int tempX = this.getX();
-        tempX+= 1;
+        tempX-= 1;
         
         if(ValidMove(tempX)){
             setX(tempX);
+              return true;
         }
+        return false;
     }
 
   

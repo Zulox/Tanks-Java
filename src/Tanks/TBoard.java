@@ -12,14 +12,16 @@ import java.awt.Image;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class TBoard extends javax.swing.JFrame  {
 
     private JButton[][] btn = new JButton[10][10];
     private Spots[][] spotz = new Spots[10][10];
-
-  
+    private ArrayList<Integer> moves = new ArrayList<Integer>();
+    private ArrayList<Integer> pmoves = new ArrayList<Integer>();
 
     //Contstructor Run all function 
     public TBoard() {
@@ -30,7 +32,7 @@ public class TBoard extends javax.swing.JFrame  {
     }
 
 
-    //Add button to the JFrame 6*7 as the board
+    //Add button to the JFrame 10*10 as the board
     private void addbutton() {
         for (int y = 0; y <= 9; y++) {
             for (int x = 0; x <= 9; x++) {
@@ -73,8 +75,6 @@ public class TBoard extends javax.swing.JFrame  {
 
                     } catch (IOException ex) {
                     }
-                 
-                    
                 } else {
                     btn[y][x].setText("  ");
                 }
@@ -82,8 +82,114 @@ public class TBoard extends javax.swing.JFrame  {
         }
     }
 
- 
+     
+     private void beginbattle(){
+         
+           pmoves.add(1);
+           pmoves.add(4);
+           pmoves.add(1);
+           pmoves.add(1);
+           pmoves.add(2);
+           
+           int P1tankY =  spotz[9][9].piece.getY();
+           int P1tankX =  spotz[9][9].piece.getX();
+           
+           int P2tankY = spotz[0][0].piece.getY();
+           int P2tankX = spotz[0][0].piece.getX();
+           
+           
+           int moving = 0;
+           
+           int turn = 2;
+           for(int i = 0; i < 10 ; i++){
+               
+               
+                   int tankX = 
+                   moving = moves.get(0); 
+                   moves.remove(0);
+                   
+                    switch (moving) {
+                        case 1:  
+                            if(spotz[0][0].piece.MoveUp()){
+                                
+                                
+                            };
+                                 break;
 
+
+                    }
+                   
+               
+               
+               
+           
+           }
+           
+     
+     
+     }
+ 
+private void AIMoves(){
+
+    Random rn = new Random();
+    
+    
+    int randomNum =0; 
+    int y = 0;
+    int x = 0;
+    int lastspot = 0;
+    
+    while ((moves.size() < 5 )){
+        y = spotz[0][0].piece.getY();
+        x = spotz[0][0].piece.getX();
+      
+    
+        randomNum = rn.nextInt((4 - 1) + 1) + 1;
+        
+        switch (randomNum) {
+            case 1:  
+                if(spotz[0][0].piece.MoveUp() && lastspot!=3){
+                    moves.add(1);
+                    lastspot = 1;
+                };
+                     break;
+            case 2:  
+                if(spotz[0][0].piece.MoveRight()  && lastspot!=4 ){
+                    moves.add(2);
+                    lastspot = 2;
+                };
+                     break;
+            case 3: 
+                if(spotz[0][0].piece.MoveDown() && lastspot!=1){
+                    moves.add(3);
+                     lastspot = 3;
+                };
+                     break;
+            case 4:
+                if(spotz[0][0].piece.MoveLeft() && lastspot!=2 ){
+                    moves.add(4);
+                     lastspot = 4;
+                };
+                     break;
+           
+                   
+        }
+        
+        spotz[0][0].piece.setY(0);
+        spotz[0][0].piece.setX(0);
+        
+         System.out.println("Y :  " + y + "    X :  " + x );
+
+        
+    
+    }
+    
+    
+    
+    
+
+}
+     
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -206,7 +312,12 @@ public class TBoard extends javax.swing.JFrame  {
     }//GEN-LAST:event_btn_NewActionPerformed
 
     private void btn_howActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_howActionPerformed
-        new HowtoPlay().setVisible(true);        // TODO add your handling code here:
+   AIMoves();
+    for(int i = 0; i < moves.size(); i++) {
+            System.out.println(moves.get(i));
+        }
+      System.out.println("Clear_--------------");
+   
     }//GEN-LAST:event_btn_howActionPerformed
 
     /**
