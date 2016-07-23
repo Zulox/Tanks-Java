@@ -14,8 +14,6 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 public class TBoard extends javax.swing.JFrame  {
@@ -68,7 +66,8 @@ public class TBoard extends javax.swing.JFrame  {
      private void maskingButton() {
         int teams = 0;
         int state = 0;
-         
+       
+
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 10; x++) {
 
@@ -84,36 +83,49 @@ public class TBoard extends javax.swing.JFrame  {
                     } catch (IOException ex) {
                     }
                 } else {
-                    btn[y][x].setIcon(null);
+                    btn[y][x].setText("  ");
                 }
             }
         }
+<<<<<<< HEAD
         System.out.println("Yolo");
     
 
         
         
      }
+=======
+    }
+>>>>>>> parent of f6b2685... Major change moving
 
      
      private void beginbattle(){
-         AIMoves();
+         
            pmoves.add(1);
            pmoves.add(4);
            pmoves.add(1);
            pmoves.add(1);
            pmoves.add(2);
            
+<<<<<<< HEAD
     P2tankY = spotz[0][0].piece.getY();
     P2tankX = spotz[0][0].piece.getX();
            
     P1tankY =  spotz[9][9].piece.getY();
     P1tankX =  spotz[9][9].piece.getX();
  
+=======
+           int P1tankY =  spotz[9][9].piece.getY();
+           int P1tankX =  spotz[9][9].piece.getX();
+           
+           int P2tankY = spotz[0][0].piece.getY();
+           int P2tankX = spotz[0][0].piece.getX();
+>>>>>>> parent of f6b2685... Major change moving
            
            
            
            int turn = 2;
+<<<<<<< HEAD
           
            while( moves.size() != 0){
                  System.out.println("Yolo" +  moves.size());            
@@ -151,43 +163,41 @@ public class TBoard extends javax.swing.JFrame  {
     private void DelayMove(int moving){
          switch (moving) {
              
+=======
+           for(int i = 0; i < 10 ; i++){
+               
+               
+                   int tankX = 
+                   moving = moves.get(0); 
+                   moves.remove(0);
+                   
+                    switch (moving) {
+>>>>>>> parent of f6b2685... Major change moving
                         case 1:  
-                            if(spotz[P2tankY][P2tankX].piece.MoveUp()){
-                               spotz[P2tankY-1][P2tankX].occupySpot(spotz[P2tankY][P2tankX].piece);
-                               spotz[P2tankY-1][P2tankX].piece.setState(moving);
-                               spotz[P2tankY][P2tankX].releaseSpot();
-                               P2tankY-=1; 
+                            if(spotz[0][0].piece.MoveUp()){
+                                
+                                
                             };
-                        break;
-                        case 2:  
-                            if(spotz[P2tankY][P2tankX].piece.MoveRight()){
-                               spotz[P2tankY][P2tankX+1].occupySpot(spotz[P2tankY][P2tankX].piece); 
-                               spotz[P2tankY][P2tankX+1].piece.setState(moving);
-                               spotz[P2tankY][P2tankX].releaseSpot();
-                               P2tankX+=1;
-                            };
-                        break;
-                        case 3:  
-                            if(spotz[P2tankY][P2tankX].piece.MoveDown()){
-                               spotz[P2tankY+1][P2tankX].occupySpot(spotz[P2tankY][P2tankX].piece); 
-                               spotz[P2tankY+1][P2tankX].piece.setState(moving);
-                               spotz[P2tankY][P2tankX].releaseSpot();
-                               P2tankY+=1;
-                            };
-                        break;
-                        case 4:  
-                            if(spotz[P2tankY][P2tankX].piece.MoveLeft()){
-                               spotz[P2tankY][P2tankX-1].occupySpot(spotz[P2tankY][P2tankX].piece); 
-                               spotz[P2tankY][P2tankX-1].piece.setState(moving);
-                               spotz[P2tankY][P2tankX].releaseSpot();
-                               P2tankX-=1;
-                            };
-                        break;
+                                 break;
+
 
                     }
+<<<<<<< HEAD
           
     
     } 
+=======
+                   
+               
+               
+               
+           
+           }
+           
+     
+     
+     }
+>>>>>>> parent of f6b2685... Major change moving
  
 private void AIMoves(){
 
@@ -366,12 +376,18 @@ private void AIMoves(){
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_NewActionPerformed
-       beginbattle();
+        this.dispose();
+
+        new TBoard().setVisible(true);
     }//GEN-LAST:event_btn_NewActionPerformed
 
     private void btn_howActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_howActionPerformed
-  
-      
+   AIMoves();
+    for(int i = 0; i < moves.size(); i++) {
+            System.out.println(moves.get(i));
+        }
+      System.out.println("Clear_--------------");
+   
     }//GEN-LAST:event_btn_howActionPerformed
 
     /**
