@@ -24,6 +24,13 @@ public class TBoard extends javax.swing.JFrame  {
     private Spots[][] spotz = new Spots[10][10];
     private ArrayList<Integer> moves = new ArrayList<Integer>();
     private ArrayList<Integer> pmoves = new ArrayList<Integer>();
+    
+        public   int P2tankY ;
+        public   int P2tankX ;
+           
+        public   int P1tankY ;
+        public   int P1tankX ;
+        public int moving = 0;
 
     //Contstructor Run all function 
     public TBoard() {
@@ -81,6 +88,7 @@ public class TBoard extends javax.swing.JFrame  {
                 }
             }
         }
+        System.out.println("Yolo");
     
 
         
@@ -96,24 +104,53 @@ public class TBoard extends javax.swing.JFrame  {
            pmoves.add(1);
            pmoves.add(2);
            
-          
+    P2tankY = spotz[0][0].piece.getY();
+    P2tankX = spotz[0][0].piece.getX();
+           
+    P1tankY =  spotz[9][9].piece.getY();
+    P1tankX =  spotz[9][9].piece.getX();
  
-           int P2tankY = spotz[0][0].piece.getY();
-           int P2tankX = spotz[0][0].piece.getX();
            
-           int P1tankY =  spotz[9][9].piece.getY();
-           int P1tankX =  spotz[9][9].piece.getX();
            
-           int moving = 0;
            
            int turn = 2;
           
            while( moves.size() != 0){
-                           
-                   moving = moves.get(0); 
-                   moves.remove(0);
-   
-                    switch (moving) {
+                 System.out.println("Yolo" +  moves.size());            
+             moving = moves.get(0);
+            moves.remove(0);
+                   
+                   //timer before next move
+            new java.util.Timer().schedule( 
+           new java.util.TimerTask() {
+            @Override
+            public void run() {
+                             DelayMove(moving);    
+                             maskingButton(); 
+            }
+        }, 
+        1000 
+);
+              
+              
+                  
+            
+                 
+                 
+            
+                    
+                    
+                    
+           }
+          
+           
+     
+     
+     }
+     
+    private void DelayMove(int moving){
+         switch (moving) {
+             
                         case 1:  
                             if(spotz[P2tankY][P2tankX].piece.MoveUp()){
                                spotz[P2tankY-1][P2tankX].occupySpot(spotz[P2tankY][P2tankX].piece);
@@ -148,28 +185,9 @@ public class TBoard extends javax.swing.JFrame  {
                         break;
 
                     }
-                    
-                    
-                    
-                    Timer SimpleTimer = new Timer(1000, new ActionListener(){
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                                   maskingButton();   
-                        }
-                    });
-                    SimpleTimer.start();
-                 
-                 
-            
-                    
-                    
-                    
-           }
           
-           
-     
-     
-     }
+    
+    } 
  
 private void AIMoves(){
 
