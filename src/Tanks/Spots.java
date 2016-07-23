@@ -31,10 +31,10 @@ public class Spots {
     }
 
     //delete current pieces in the spot, but return the old piece
-    public TankPiece releaseSpot() {
-        TankPiece releasedPiece = this.piece;
+    public void releaseSpot() {
+        
         this.piece = null;
-        return releasedPiece;
+        
     }
 
     //delete current pieces in the spot
