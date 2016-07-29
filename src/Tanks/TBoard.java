@@ -14,23 +14,26 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import java.util.Timer;
 
-public class TBoard extends javax.swing.JFrame  {
+public class TBoard extends javax.swing.JFrame {
 
     private JButton[][] btn = new JButton[10][10];
     private Spots[][] spotz = new Spots[10][10];
     private ArrayList<Integer> moves = new ArrayList<Integer>();
     private ArrayList<Integer> pmoves = new ArrayList<Integer>();
-    
-        public   int P2tankY ;
-        public   int P2tankX ;
-           
-        public   int P1tankY ;
-        public   int P1tankX ;
-        public int moving = 0;
+     Timer t ;
+     TimerTask tt;
+
+    public int P2tankY;
+    public int P2tankX;
+    public int P1tankY;
+    public int P1tankX;
+    public int moving = 0;
 
     //Contstructor Run all function 
     public TBoard() {
@@ -39,7 +42,6 @@ public class TBoard extends javax.swing.JFrame  {
         initializePiece();
         maskingButton();
     }
-
 
     //Add button to the JFrame 10*10 as the board
     private void addbutton() {
@@ -51,7 +53,7 @@ public class TBoard extends javax.swing.JFrame  {
             }
         }
     }
-    
+
     private void initializePiece() {
 
         for (int y = 0; y < 10; y++) {
@@ -60,23 +62,23 @@ public class TBoard extends javax.swing.JFrame  {
             }
         }
 
-        spotz[0][0].occupySpot(new TankPiece(2, 0, 0 , 2));
-        spotz[9][9].occupySpot(new TankPiece(1, 9, 9 , 1));
- 
+        spotz[0][0].occupySpot(new TankPiece(2, 0, 0, 2));
+        spotz[9][9].occupySpot(new TankPiece(1, 9, 9, 1));
+
     }
-    
-     private void maskingButton() {
+
+    private void maskingButton() {
         int teams = 0;
         int state = 0;
-         
+
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 10; x++) {
 
                 if (spotz[y][x].isOccupied()) {
                     teams = spotz[y][x].piece.getTeam();
                     state = spotz[y][x].piece.getState();
-                    
-                     try {
+
+                    try {
                         Image img = ImageIO.read(getClass().getResource("/Tank/Image/Tank" + teams + state + ".png"));
                         Image newimg = img.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
                         btn[y][x].setIcon(new ImageIcon(newimg));
@@ -89,140 +91,178 @@ public class TBoard extends javax.swing.JFrame  {
             }
         }
         System.out.println("Yolo");
-    
 
-        
-        
-     }
+    }
 
-     
-     private void beginbattle(){
-         AIMoves();
-           pmoves.add(1);
-           pmoves.add(4);
-           pmoves.add(1);
-           pmoves.add(1);
-           pmoves.add(2);
-           
-    P2tankY = spotz[0][0].piece.getY();
-    P2tankX = spotz[0][0].piece.getX();
-           
-    P1tankY =  spotz[9][9].piece.getY();
-    P1tankX =  spotz[9][9].piece.getX();
- 
-           
-           
-           
-           int turn = 2;
-          
-           while( moves.size() != 0){
-            System.out.println("Yolo" +  moves.size());            
-            moving = moves.get(0);
-            moves.remove(0);                    
-           }
-     }     
-    private void DelayMove(int moving){
-         switch (moving) {
-             
-                        case 1:  
-                            if(spotz[P2tankY][P2tankX].piece.MoveUp()){
-                               spotz[P2tankY-1][P2tankX].occupySpot(spotz[P2tankY][P2tankX].piece);
-                               spotz[P2tankY-1][P2tankX].piece.setState(moving);
-                               spotz[P2tankY][P2tankX].releaseSpot();
-                               P2tankY-=1; 
-                            };
-                        break;
-                        case 2:  
-                            if(spotz[P2tankY][P2tankX].piece.MoveRight()){
-                               spotz[P2tankY][P2tankX+1].occupySpot(spotz[P2tankY][P2tankX].piece); 
-                               spotz[P2tankY][P2tankX+1].piece.setState(moving);
-                               spotz[P2tankY][P2tankX].releaseSpot();
-                               P2tankX+=1;
-                            };
-                        break;
-                        case 3:  
-                            if(spotz[P2tankY][P2tankX].piece.MoveDown()){
-                               spotz[P2tankY+1][P2tankX].occupySpot(spotz[P2tankY][P2tankX].piece); 
-                               spotz[P2tankY+1][P2tankX].piece.setState(moving);
-                               spotz[P2tankY][P2tankX].releaseSpot();
-                               P2tankY+=1;
-                            };
-                        break;
-                        case 4:  
-                            if(spotz[P2tankY][P2tankX].piece.MoveLeft()){
-                               spotz[P2tankY][P2tankX-1].occupySpot(spotz[P2tankY][P2tankX].piece); 
-                               spotz[P2tankY][P2tankX-1].piece.setState(moving);
-                               spotz[P2tankY][P2tankX].releaseSpot();
-                               P2tankX-=1;
-                            };
-                        break;
+    private void beginbattle() {
+        // AIMoves();
+        moves.add(2);
+        moves.add(2);
+        moves.add(3);
+        moves.add(2);
+        moves.add(4);
+
+        pmoves.add(1);
+        pmoves.add(4);
+        pmoves.add(1);
+        pmoves.add(1);
+        pmoves.add(2);
+
+        P2tankY = spotz[0][0].piece.getY();
+        P2tankX = spotz[0][0].piece.getX();
+
+        P1tankY = spotz[9][9].piece.getY();
+        P1tankX = spotz[9][9].piece.getX();
+
+        int turn = 2;
+
+        //  Timer timer = new Timer(1000, listener);  
+        //  timer.start();
+         t = new Timer();
+        tt = new TimerTask() {
+            @Override
+            public void run() {
+
+                if (moves.size() != 0) {
+                    
+                    System.out.println("Yolo" + moves.size());
+                    lbl_Turn.setText("Yolo" + moves.size());
+
+                    moving = moves.get(0);
+                    moves.remove(0);
+                    switch (moving) {
+
+                        case 1:
+                            if (spotz[P2tankY][P2tankX].piece.MoveUp()) {
+                                spotz[P2tankY - 1][P2tankX].occupySpot(spotz[P2tankY][P2tankX].piece);
+                                spotz[P2tankY - 1][P2tankX].piece.setState(moving);
+                                spotz[P2tankY][P2tankX].releaseSpot();
+                                MovingStuff(P2tankY, P2tankX, P2tankY - 1, P2tankX);
+                                P2tankY -= 1;
+                            }
+                            ;
+                            break;
+                        case 2:
+                            if (spotz[P2tankY][P2tankX].piece.MoveRight()) {
+                                spotz[P2tankY][P2tankX + 1].occupySpot(spotz[P2tankY][P2tankX].piece);
+                                spotz[P2tankY][P2tankX + 1].piece.setState(moving);
+                                spotz[P2tankY][P2tankX].releaseSpot();
+                                MovingStuff(P2tankY, P2tankX, P2tankY, P2tankX + 1);
+                                P2tankX += 1;
+                            }
+                            ;
+                            break;
+                        case 3:
+                            if (spotz[P2tankY][P2tankX].piece.MoveDown()) {
+                                spotz[P2tankY + 1][P2tankX].occupySpot(spotz[P2tankY][P2tankX].piece);
+                                spotz[P2tankY + 1][P2tankX].piece.setState(moving);
+                                spotz[P2tankY][P2tankX].releaseSpot();
+                                MovingStuff(P2tankY, P2tankX, P2tankY + 1, P2tankX);
+                                P2tankY += 1;
+                            }
+                            ;
+                            break;
+                        case 4:
+                            if (spotz[P2tankY][P2tankX].piece.MoveLeft()) {
+                                spotz[P2tankY][P2tankX - 1].occupySpot(spotz[P2tankY][P2tankX].piece);
+                                spotz[P2tankY][P2tankX - 1].piece.setState(moving);
+                                spotz[P2tankY][P2tankX].releaseSpot();
+                                MovingStuff(P2tankY, P2tankX, P2tankY, P2tankX - 1);
+                                P2tankX -= 1;
+                            }
+                            ;
+                            break;
 
                     }
-          
-    
-    } 
- 
-private void AIMoves(){
+                }else{
+                t.cancel();
+                tt.cancel();
+                lbl_Turn.setText("Yolo Habis" );
 
-    Random rn = new Random();
-    
-    
-    int randomNum =0; 
-    int y = 0;
-    int x = 0;
-    int lastspot = 0;
-    
-    while ((moves.size() < 5 )){
-        y = spotz[0][0].piece.getY();
-        x = spotz[0][0].piece.getX();
-      
-    
-        randomNum = rn.nextInt((4 - 1) + 1) + 1;
-        
-        switch (randomNum) {
-            case 1:  
-                if(spotz[0][0].piece.MoveUp() && lastspot!=3){
-                    moves.add(1);
-                    lastspot = 1;
-                };
-                     break;
-            case 2:  
-                if(spotz[0][0].piece.MoveRight()  && lastspot!=4 ){
-                    moves.add(2);
-                    lastspot = 2;
-                };
-                     break;
-            case 3: 
-                if(spotz[0][0].piece.MoveDown() && lastspot!=1){
-                    moves.add(3);
-                     lastspot = 3;
-                };
-                     break;
-            case 4:
-                if(spotz[0][0].piece.MoveLeft() && lastspot!=2 ){
-                    moves.add(4);
-                     lastspot = 4;
-                };
-                     break;
-           
-                   
-        }
-        
-        spotz[0][0].piece.setY(0);
-        spotz[0][0].piece.setX(0);
-        
-         System.out.println("Y :  " + y + "    X :  " + x );
+                }
 
-        
-    
+            }
+        ;
+        };
+            t.schedule(tt, 1000, 1000);
+
     }
-    
-    
-    
-    
 
-}
-     
+    private void MovingStuff(int Y1, int X1, int Y2, int X2) {
+
+        if (spotz[Y2][X2].isOccupied()) {
+            int teams = spotz[Y2][X2].piece.getTeam();
+            int state = spotz[Y2][X2].piece.getState();
+
+            try {
+                Image img = ImageIO.read(getClass().getResource("/Tank/Image/Tank" + teams + state + ".png"));
+                Image newimg = img.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
+                btn[Y2][X2].setIcon(new ImageIcon(newimg));
+
+            } catch (IOException ex) {
+            }
+        }
+
+        btn[Y1][X1].setIcon(null);
+
+    }
+
+    private void AIMoves() {
+
+        Random rn = new Random();
+
+        int randomNum = 0;
+        int y = 0;
+        int x = 0;
+        int lastspot = 0;
+
+        while ((moves.size() < 5)) {
+            y = spotz[0][0].piece.getY();
+            x = spotz[0][0].piece.getX();
+
+            randomNum = rn.nextInt((4 - 1) + 1) + 1;
+
+            switch (randomNum) {
+                case 1:
+                    if (spotz[0][0].piece.MoveUp() && lastspot != 3) {
+                        moves.add(1);
+                        lastspot = 1;
+                    }
+                    ;
+                    break;
+                case 2:
+                    if (spotz[0][0].piece.MoveRight() && lastspot != 4) {
+                        moves.add(2);
+                        lastspot = 2;
+                    }
+                    ;
+                    break;
+                case 3:
+                    if (spotz[0][0].piece.MoveDown() && lastspot != 1) {
+                        moves.add(3);
+                        lastspot = 3;
+                    }
+                    ;
+                    break;
+                case 4:
+                    if (spotz[0][0].piece.MoveLeft() && lastspot != 2) {
+                        moves.add(4);
+                        lastspot = 4;
+                    }
+                    ;
+                    break;
+
+            }
+
+            spotz[0][0].piece.setY(0);
+            spotz[0][0].piece.setX(0);
+
+            System.out.println("Y :  " + y + "    X :  " + x);
+
+        }
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -339,12 +379,12 @@ private void AIMoves(){
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_NewActionPerformed
-       beginbattle();
+        beginbattle();
     }//GEN-LAST:event_btn_NewActionPerformed
 
     private void btn_howActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_howActionPerformed
-  
-      
+
+
     }//GEN-LAST:event_btn_howActionPerformed
 
     /**
