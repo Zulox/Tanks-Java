@@ -109,6 +109,23 @@ public class TankPiece {
         }
         return false;
     }
+    
+    public boolean FireRight( Spots[][] spotz) {
+        int currentX = this.getX() + 1;
+        int y = this.getY();
+        
+        
+        for(int x = currentX ; x <= 10 ; x++){
+           
+            if(spotz[y][x].isOccupied()){
+                return true;
+            }
+            
+        }
+        
+        
+        return false;
+    }
 
   
 }

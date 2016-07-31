@@ -63,7 +63,7 @@ public class TBoard extends javax.swing.JFrame {
         }
 
         spotz[0][0].occupySpot(new TankPiece(2, 0, 0, 2));
-        spotz[9][9].occupySpot(new TankPiece(1, 9, 9, 1));
+        spotz[0][7].occupySpot(new TankPiece(1, 0, 7, 1));
 
     }
 
@@ -96,12 +96,8 @@ public class TBoard extends javax.swing.JFrame {
 
     private void beginbattle() {
         // AIMoves();
-        moves.add(2);
-        moves.add(2);
-        moves.add(3);
-        moves.add(2);
-        moves.add(4);
-
+        moves.add(6);
+      
         pmoves.add(1);
         pmoves.add(4);
         pmoves.add(1);
@@ -111,14 +107,14 @@ public class TBoard extends javax.swing.JFrame {
         P2tankY = spotz[0][0].piece.getY();
         P2tankX = spotz[0][0].piece.getX();
 
-        P1tankY = spotz[9][9].piece.getY();
-        P1tankX = spotz[9][9].piece.getX();
+        P1tankY = spotz[0][7].piece.getY();
+        P1tankX = spotz[0][7].piece.getX();
 
         int turn = 2;
 
         //  Timer timer = new Timer(1000, listener);  
         //  timer.start();
-         t = new Timer();
+        t = new Timer();
         tt = new TimerTask() {
             @Override
             public void run() {
@@ -170,6 +166,16 @@ public class TBoard extends javax.swing.JFrame {
                                 MovingStuff(P2tankY, P2tankX, P2tankY, P2tankX - 1);
                                 P2tankX -= 1;
                             }
+                        case 6:{
+                            
+                            if (spotz[P2tankY][P2tankX].piece.FireRight(spotz)) {
+                            JOptionPane.showMessageDialog(null, "mello", "GAME OVER", JOptionPane.PLAIN_MESSAGE);
+                            FireTorpedo(P2tankY, P2tankY, moving);                                 
+                            }
+
+                        
+                        }   
+                            
                             ;
                             break;
 
@@ -184,10 +190,28 @@ public class TBoard extends javax.swing.JFrame {
             }
         ;
         };
-            t.schedule(tt, 1000, 1000);
+        t.schedule(tt, 1000, 1000);
 
     }
 
+    private void FireTorpedo(int Y1, int X1, int dir){
+    
+        if (spotz[Y1][X1].isOccupied()) {
+            int teams = spotz[Y1][X1].piece.getTeam();
+           
+
+            try {
+                Image img = ImageIO.read(getClass().getResource("/Tank/Image/Tank" + teams + dir + ".png"));
+                Image newimg = img.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
+                btn[Y1][X1].setIcon(new ImageIcon(newimg));
+
+            } catch (IOException ex) {
+            }
+        }
+        
+        
+    }
+    
     private void MovingStuff(int Y1, int X1, int Y2, int X2) {
 
         if (spotz[Y2][X2].isOccupied()) {
