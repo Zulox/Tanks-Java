@@ -26,14 +26,15 @@ public class TBoard extends javax.swing.JFrame {
     private Spots[][] spotz = new Spots[10][10];
     private ArrayList<Integer> moves = new ArrayList<Integer>();
     private ArrayList<Integer> pmoves = new ArrayList<Integer>();
-     Timer t ;
-     TimerTask tt;
+    Timer t;
+    TimerTask tt;
 
     public int P2tankY;
     public int P2tankX;
     public int P1tankY;
     public int P1tankX;
-    public int moving = 0;
+  
+    public boolean playerTurn = false;
 
     //Contstructor Run all function 
     public TBoard() {
@@ -63,7 +64,7 @@ public class TBoard extends javax.swing.JFrame {
         }
 
         spotz[0][0].occupySpot(new TankPiece(2, 0, 0, 2));
-        spotz[0][7].occupySpot(new TankPiece(1, 0, 7, 1));
+        spotz[9][9].occupySpot(new TankPiece(1, 9, 9, 1));
 
     }
 
@@ -96,8 +97,12 @@ public class TBoard extends javax.swing.JFrame {
 
     private void beginbattle() {
         // AIMoves();
-        moves.add(6);
-      
+        moves.add(2);
+        moves.add(2);
+        moves.add(3);
+        moves.add(3);
+        moves.add(2);
+
         pmoves.add(1);
         pmoves.add(4);
         pmoves.add(1);
@@ -107,10 +112,8 @@ public class TBoard extends javax.swing.JFrame {
         P2tankY = spotz[0][0].piece.getY();
         P2tankX = spotz[0][0].piece.getX();
 
-        P1tankY = spotz[0][7].piece.getY();
-        P1tankX = spotz[0][7].piece.getX();
-
-        int turn = 2;
+        P1tankY = spotz[9][9].piece.getY();
+        P1tankX = spotz[9][9].piece.getX();
 
         //  Timer timer = new Timer(1000, listener);  
         //  timer.start();
@@ -119,72 +122,19 @@ public class TBoard extends javax.swing.JFrame {
             @Override
             public void run() {
 
-                if (moves.size() != 0) {
-                    
-                    System.out.println("Yolo" + moves.size());
-                    lbl_Turn.setText("Yolo" + moves.size());
-
-                    moving = moves.get(0);
-                    moves.remove(0);
-                    switch (moving) {
-
-                        case 1:
-                            if (spotz[P2tankY][P2tankX].piece.MoveUp()) {
-                                spotz[P2tankY - 1][P2tankX].occupySpot(spotz[P2tankY][P2tankX].piece);
-                                spotz[P2tankY - 1][P2tankX].piece.setState(moving);
-                                spotz[P2tankY][P2tankX].releaseSpot();
-                                MovingStuff(P2tankY, P2tankX, P2tankY - 1, P2tankX);
-                                P2tankY -= 1;
-                            }
-                            ;
-                            break;
-                        case 2:
-                            if (spotz[P2tankY][P2tankX].piece.MoveRight()) {
-                                spotz[P2tankY][P2tankX + 1].occupySpot(spotz[P2tankY][P2tankX].piece);
-                                spotz[P2tankY][P2tankX + 1].piece.setState(moving);
-                                spotz[P2tankY][P2tankX].releaseSpot();
-                                MovingStuff(P2tankY, P2tankX, P2tankY, P2tankX + 1);
-                                P2tankX += 1;
-                            }
-                            ;
-                            break;
-                        case 3:
-                            if (spotz[P2tankY][P2tankX].piece.MoveDown()) {
-                                spotz[P2tankY + 1][P2tankX].occupySpot(spotz[P2tankY][P2tankX].piece);
-                                spotz[P2tankY + 1][P2tankX].piece.setState(moving);
-                                spotz[P2tankY][P2tankX].releaseSpot();
-                                MovingStuff(P2tankY, P2tankX, P2tankY + 1, P2tankX);
-                                P2tankY += 1;
-                            }
-                            ;
-                            break;
-                        case 4:
-                            if (spotz[P2tankY][P2tankX].piece.MoveLeft()) {
-                                spotz[P2tankY][P2tankX - 1].occupySpot(spotz[P2tankY][P2tankX].piece);
-                                spotz[P2tankY][P2tankX - 1].piece.setState(moving);
-                                spotz[P2tankY][P2tankX].releaseSpot();
-                                MovingStuff(P2tankY, P2tankX, P2tankY, P2tankX - 1);
-                                P2tankX -= 1;
-                            }
-                        case 6:{
-                            
-                            if (spotz[P2tankY][P2tankX].piece.FireRight(spotz)) {
-                            JOptionPane.showMessageDialog(null, "mello", "GAME OVER", JOptionPane.PLAIN_MESSAGE);
-                            FireTorpedo(P2tankY, P2tankY, moving);                                 
-                            }
-
-                        
-                        }   
-                            
-                            ;
-                            break;
-
+                if ((moves.size() != 0) || (pmoves.size() != 0)) {
+             
+                    if (playerTurn) {
+                        PlayerTurn();
+                        playerTurn = false;
+                    } else {
+                        AITurn();
+                        playerTurn = true;
                     }
-                }else{
-                t.cancel();
-                tt.cancel();
-                lbl_Turn.setText("Yolo Habis" );
-
+                } else {
+                    t.cancel();
+                    tt.cancel();
+                    lbl_Turn.setText("Yolo Habis");
                 }
 
             }
@@ -194,11 +144,120 @@ public class TBoard extends javax.swing.JFrame {
 
     }
 
-    private void FireTorpedo(int Y1, int X1, int dir){
-    
+    private void AITurn() {
+
+        System.out.println("Yolo" + moves.size());
+        lbl_Turn.setText("Yolo" + moves.size());
+
+        int moving = moves.get(0);
+        moves.remove(0);
+        switch (moving) {
+
+            case 1:
+                if (spotz[P2tankY][P2tankX].piece.MoveUp()) {
+                    spotz[P2tankY - 1][P2tankX].occupySpot(spotz[P2tankY][P2tankX].piece);
+                    spotz[P2tankY - 1][P2tankX].piece.setState(moving);
+                    spotz[P2tankY][P2tankX].releaseSpot();
+                    MovingAvatar(P2tankY, P2tankX, P2tankY - 1, P2tankX);
+                    P2tankY -= 1;
+                }
+                ;
+                break;
+            case 2:
+                if (spotz[P2tankY][P2tankX].piece.MoveRight()) {
+                    spotz[P2tankY][P2tankX + 1].occupySpot(spotz[P2tankY][P2tankX].piece);
+                    spotz[P2tankY][P2tankX + 1].piece.setState(moving);
+                    spotz[P2tankY][P2tankX].releaseSpot();
+                    MovingAvatar(P2tankY, P2tankX, P2tankY, P2tankX + 1);
+                    P2tankX += 1;
+                }
+                ;
+                break;
+            case 3:
+                if (spotz[P2tankY][P2tankX].piece.MoveDown()) {
+                    spotz[P2tankY + 1][P2tankX].occupySpot(spotz[P2tankY][P2tankX].piece);
+                    spotz[P2tankY + 1][P2tankX].piece.setState(moving);
+                    spotz[P2tankY][P2tankX].releaseSpot();
+                    MovingAvatar(P2tankY, P2tankX, P2tankY + 1, P2tankX);
+                    P2tankY += 1;
+                }
+                ;
+                break;
+            case 4:
+                if (spotz[P2tankY][P2tankX].piece.MoveLeft()) {
+                    spotz[P2tankY][P2tankX - 1].occupySpot(spotz[P2tankY][P2tankX].piece);
+                    spotz[P2tankY][P2tankX - 1].piece.setState(moving);
+                    spotz[P2tankY][P2tankX].releaseSpot();
+                    MovingAvatar(P2tankY, P2tankX, P2tankY, P2tankX - 1);
+                    P2tankX -= 1;
+                }
+          
+
+            ;
+            break;
+
+        }
+
+    }
+
+    private void PlayerTurn() {
+        System.out.println("Yolo" + moves.size());
+        lbl_Turn.setText("Yolo" + moves.size());
+
+        int moving = pmoves.get(0);
+        pmoves.remove(0);
+        switch (moving) {
+
+            case 1:
+                if (spotz[P1tankY][P1tankX].piece.MoveUp()) {
+                    spotz[P1tankY - 1][P1tankX].occupySpot(spotz[P1tankY][P1tankX].piece);
+                    spotz[P1tankY - 1][P1tankX].piece.setState(moving);
+                    spotz[P1tankY][P1tankX].releaseSpot();
+                    MovingAvatar(P1tankY, P1tankX, P1tankY - 1, P1tankX);
+                    P1tankY -= 1;
+                }
+                ;
+                break;
+            case 2:
+                if (spotz[P1tankY][P1tankX].piece.MoveRight()) {
+                    spotz[P1tankY][P1tankX + 1].occupySpot(spotz[P1tankY][P1tankX].piece);
+                    spotz[P1tankY][P1tankX + 1].piece.setState(moving);
+                    spotz[P1tankY][P1tankX].releaseSpot();
+                    MovingAvatar(P1tankY, P1tankX, P1tankY, P1tankX + 1);
+                    P1tankX += 1;
+                }
+                ;
+                break;
+            case 3:
+                if (spotz[P1tankY][P1tankX].piece.MoveDown()) {
+                    spotz[P1tankY + 1][P1tankX].occupySpot(spotz[P1tankY][P1tankX].piece);
+                    spotz[P1tankY + 1][P1tankX].piece.setState(moving);
+                    spotz[P1tankY][P1tankX].releaseSpot();
+                    MovingAvatar(P1tankY, P1tankX, P1tankY + 1, P1tankX);
+                    P1tankY += 1;
+                }
+                ;
+                break;
+            case 4:
+                if (spotz[P1tankY][P1tankX].piece.MoveLeft()) {
+                    spotz[P1tankY][P1tankX - 1].occupySpot(spotz[P1tankY][P1tankX].piece);
+                    spotz[P1tankY][P1tankX - 1].piece.setState(moving);
+                    spotz[P1tankY][P1tankX].releaseSpot();
+                    MovingAvatar(P1tankY, P1tankX, P1tankY, P1tankX - 1);
+                    P1tankX -= 1;
+                }
+           
+            ;
+            break;
+
+        }
+
+    }
+
+    private void FireTorpedo(int Y1, int X1, int dir) {
+
         if (spotz[Y1][X1].isOccupied()) {
             int teams = spotz[Y1][X1].piece.getTeam();
-           
 
             try {
                 Image img = ImageIO.read(getClass().getResource("/Tank/Image/Tank" + teams + dir + ".png"));
@@ -208,11 +267,10 @@ public class TBoard extends javax.swing.JFrame {
             } catch (IOException ex) {
             }
         }
-        
-        
+
     }
-    
-    private void MovingStuff(int Y1, int X1, int Y2, int X2) {
+
+    private void MovingAvatar(int Y1, int X1, int Y2, int X2) {
 
         if (spotz[Y2][X2].isOccupied()) {
             int teams = spotz[Y2][X2].piece.getTeam();
