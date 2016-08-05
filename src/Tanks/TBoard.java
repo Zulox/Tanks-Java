@@ -21,9 +21,10 @@ import javax.imageio.ImageIO;
 import java.util.Timer;
 
 public class TBoard extends javax.swing.JFrame {
-
-    private JButton[][] btn = new JButton[10][10];
-    private Spots[][] spotz = new Spots[10][10];
+   
+    DefaultListModel model = new DefaultListModel();    
+    private JButton[][] btn = new JButton[8][8];
+    private Spots[][] spotz = new Spots[8][8];
     private ArrayList<Integer> moves = new ArrayList<Integer>();
     private ArrayList<Integer> pmoves = new ArrayList<Integer>();
     Timer t;
@@ -39,6 +40,7 @@ public class TBoard extends javax.swing.JFrame {
     //Contstructor Run all function 
     public TBoard() {
         initComponents();
+        lst_moves.setModel(model);
         addbutton();
         initializePiece();
         maskingButton();
@@ -46,8 +48,8 @@ public class TBoard extends javax.swing.JFrame {
 
     //Add button to the JFrame 10*10 as the board
     private void addbutton() {
-        for (int y = 0; y <= 9; y++) {
-            for (int x = 0; x <= 9; x++) {
+        for (int y = 0; y <= 7; y++) {
+            for (int x = 0; x <= 7; x++) {
                 btn[y][x] = new JButton();
                 pnl_Board.add(btn[y][x]);
                 btn[y][x].setBackground(new java.awt.Color(255, 255, 255));
@@ -57,14 +59,14 @@ public class TBoard extends javax.swing.JFrame {
 
     private void initializePiece() {
 
-        for (int y = 0; y < 10; y++) {
-            for (int x = 0; x < 10; x++) {
+        for (int y = 0; y <= 7; y++) {
+            for (int x = 0; x <= 7; x++) {
                 spotz[y][x] = new Spots();
             }
         }
 
         spotz[0][0].occupySpot(new TankPiece(2, 0, 0, 2));
-        spotz[9][9].occupySpot(new TankPiece(1, 9, 9, 1));
+        spotz[7][7].occupySpot(new TankPiece(1, 7, 7, 1));
 
     }
 
@@ -72,8 +74,8 @@ public class TBoard extends javax.swing.JFrame {
         int teams = 0;
         int state = 0;
 
-        for (int y = 0; y < 10; y++) {
-            for (int x = 0; x < 10; x++) {
+        for (int y = 0; y <= 7; y++) {
+            for (int x = 0; x <= 7; x++) {
 
                 if (spotz[y][x].isOccupied()) {
                     teams = spotz[y][x].piece.getTeam();
@@ -101,19 +103,20 @@ public class TBoard extends javax.swing.JFrame {
         moves.add(2);
         moves.add(3);
         moves.add(3);
-        moves.add(2);
+        moves.add(3);
 
-        pmoves.add(1);
-        pmoves.add(4);
-        pmoves.add(1);
+        pmoves.add(3);
+        pmoves.add(3);
+        pmoves.add(3);
         pmoves.add(1);
         pmoves.add(2);
+    
 
         P2tankY = spotz[0][0].piece.getY();
         P2tankX = spotz[0][0].piece.getX();
 
-        P1tankY = spotz[9][9].piece.getY();
-        P1tankX = spotz[9][9].piece.getX();
+        P1tankY = spotz[7][7].piece.getY();
+        P1tankX = spotz[7][7].piece.getX();
 
         //  Timer timer = new Timer(1000, listener);  
         //  timer.start();
@@ -123,14 +126,8 @@ public class TBoard extends javax.swing.JFrame {
             public void run() {
 
                 if ((moves.size() != 0) || (pmoves.size() != 0)) {
-             
-                    if (playerTurn) {
                         PlayerTurn();
-                        playerTurn = false;
-                    } else {
-                        AITurn();
-                        playerTurn = true;
-                    }
+                        AITurn();                  
                 } else {
                     t.cancel();
                     tt.cancel();
@@ -146,7 +143,7 @@ public class TBoard extends javax.swing.JFrame {
 
     private void AITurn() {
 
-        System.out.println("Yolo" + moves.size());
+       
         lbl_Turn.setText("Yolo" + moves.size());
 
         int moving = moves.get(0);
@@ -161,6 +158,10 @@ public class TBoard extends javax.swing.JFrame {
                     MovingAvatar(P2tankY, P2tankX, P2tankY - 1, P2tankX);
                     P2tankY -= 1;
                 }
+                else{
+                    spotz[P2tankY][P2tankX].piece.setState(moving);
+                     StaticAvatar(P2tankY, P2tankX);
+                }
                 ;
                 break;
             case 2:
@@ -170,6 +171,11 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P2tankY][P2tankX].releaseSpot();
                     MovingAvatar(P2tankY, P2tankX, P2tankY, P2tankX + 1);
                     P2tankX += 1;
+                }
+                else{
+                    spotz[P2tankY][P2tankX].piece.setState(moving);
+                    StaticAvatar(P2tankY, P2tankX);
+                            
                 }
                 ;
                 break;
@@ -181,6 +187,11 @@ public class TBoard extends javax.swing.JFrame {
                     MovingAvatar(P2tankY, P2tankX, P2tankY + 1, P2tankX);
                     P2tankY += 1;
                 }
+                else{
+                   spotz[P2tankY][P2tankX].piece.setState(moving);
+                    StaticAvatar(P2tankY, P2tankX);
+                     
+                }
                 ;
                 break;
             case 4:
@@ -190,6 +201,11 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P2tankY][P2tankX].releaseSpot();
                     MovingAvatar(P2tankY, P2tankX, P2tankY, P2tankX - 1);
                     P2tankX -= 1;
+                }
+                else{
+                    spotz[P2tankY][P2tankX].piece.setState(moving);
+                    StaticAvatar(P2tankY, P2tankX);
+                  
                 }
           
 
@@ -201,7 +217,7 @@ public class TBoard extends javax.swing.JFrame {
     }
 
     private void PlayerTurn() {
-        System.out.println("Yolo" + moves.size());
+       
         lbl_Turn.setText("Yolo" + moves.size());
 
         int moving = pmoves.get(0);
@@ -215,6 +231,12 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P1tankY][P1tankX].releaseSpot();
                     MovingAvatar(P1tankY, P1tankX, P1tankY - 1, P1tankX);
                     P1tankY -= 1;
+                   
+                }
+                else{
+                    spotz[P1tankY][P1tankX].piece.setState(moving);
+                   StaticAvatar(P1tankY, P1tankX);
+                   
                 }
                 ;
                 break;
@@ -225,6 +247,12 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P1tankY][P1tankX].releaseSpot();
                     MovingAvatar(P1tankY, P1tankX, P1tankY, P1tankX + 1);
                     P1tankX += 1;
+                      
+                }
+                else{
+                    spotz[P1tankY][P1tankX].piece.setState(moving);
+                   StaticAvatar(P1tankY, P1tankX);
+                        
                 }
                 ;
                 break;
@@ -235,6 +263,12 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P1tankY][P1tankX].releaseSpot();
                     MovingAvatar(P1tankY, P1tankX, P1tankY + 1, P1tankX);
                     P1tankY += 1;
+                   
+                }
+                else{
+                    spotz[P1tankY][P1tankX].piece.setState(moving);
+                   StaticAvatar(P1tankY, P1tankX);
+                  
                 }
                 ;
                 break;
@@ -245,6 +279,12 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P1tankY][P1tankX].releaseSpot();
                     MovingAvatar(P1tankY, P1tankX, P1tankY, P1tankX - 1);
                     P1tankX -= 1;
+                    
+                }
+                else{
+                    spotz[P1tankY][P1tankX].piece.setState(moving);
+                   StaticAvatar(P1tankY, P1tankX);
+                    
                 }
            
             ;
@@ -286,6 +326,25 @@ public class TBoard extends javax.swing.JFrame {
         }
 
         btn[Y1][X1].setIcon(null);
+
+    }
+    
+     private void StaticAvatar(int Y1, int X1) {
+
+        if (spotz[Y1][X1].isOccupied()) {
+            int teams = spotz[Y1][X1].piece.getTeam();
+            int state = spotz[Y1][X1].piece.getState();
+
+            try {
+                Image img = ImageIO.read(getClass().getResource("/Tank/Image/Tank" + teams + state + ".png"));
+                Image newimg = img.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
+                btn[Y1][X1].setIcon(new ImageIcon(newimg));
+
+            } catch (IOException ex) {
+            }
+        }
+
+      
 
     }
 
@@ -356,90 +415,214 @@ public class TBoard extends javax.swing.JFrame {
 
         pnl_Board = new javax.swing.JPanel();
         pnl_info = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         lbl_Turn = new javax.swing.JLabel();
+        btn_Start = new javax.swing.JButton();
+        btn_Mleft = new javax.swing.JButton();
+        btn_Mright = new javax.swing.JButton();
+        btn_Mdown = new javax.swing.JButton();
+        btn_Mup = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        lbl_Interval = new javax.swing.JLabel();
-        lbl_Note = new javax.swing.JLabel();
-        btn_New = new javax.swing.JButton();
-        btn_how = new javax.swing.JButton();
+        btn_Fup = new javax.swing.JButton();
+        btn_Fleft = new javax.swing.JButton();
+        btn_Fright = new javax.swing.JButton();
+        btn_Fdown = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        btn_clear = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lst_moves = new javax.swing.JList();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         pnl_Board.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        pnl_Board.setLayout(new java.awt.GridLayout(10, 10));
-
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("TURN");
+        pnl_Board.setLayout(new java.awt.GridLayout(8, 8));
 
         lbl_Turn.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         lbl_Turn.setForeground(new java.awt.Color(255, 51, 51));
         lbl_Turn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbl_Turn.setText("1");
 
+        btn_Start.setBackground(new java.awt.Color(204, 255, 204));
+        btn_Start.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        btn_Start.setText("START");
+        btn_Start.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_StartActionPerformed(evt);
+            }
+        });
+
+        btn_Mleft.setBackground(new java.awt.Color(153, 255, 153));
+        btn_Mleft.setText("LEFT");
+        btn_Mleft.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_MleftActionPerformed(evt);
+            }
+        });
+
+        btn_Mright.setBackground(new java.awt.Color(153, 255, 153));
+        btn_Mright.setText("RIGHT");
+        btn_Mright.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_MrightActionPerformed(evt);
+            }
+        });
+
+        btn_Mdown.setBackground(new java.awt.Color(153, 255, 153));
+        btn_Mdown.setText("DOWN");
+        btn_Mdown.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_MdownActionPerformed(evt);
+            }
+        });
+
+        btn_Mup.setBackground(new java.awt.Color(153, 255, 153));
+        btn_Mup.setText("UP");
+        btn_Mup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_MupActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jLabel1.setText("MOVE");
+        jLabel1.setToolTipText("");
+
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Interval");
+        jLabel2.setText("SHOOT");
 
-        lbl_Interval.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
-        lbl_Interval.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbl_Interval.setText("1");
-
-        lbl_Note.setFont(new java.awt.Font("Arial", 0, 34)); // NOI18N
-        lbl_Note.setForeground(new java.awt.Color(255, 51, 51));
-        lbl_Note.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbl_Note.setText("None");
-        lbl_Note.setToolTipText("");
-
-        btn_New.setBackground(new java.awt.Color(204, 255, 204));
-        btn_New.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        btn_New.setText("NEW GAME");
-        btn_New.addActionListener(new java.awt.event.ActionListener() {
+        btn_Fup.setBackground(new java.awt.Color(255, 153, 153));
+        btn_Fup.setText("UP");
+        btn_Fup.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_NewActionPerformed(evt);
+                btn_FupActionPerformed(evt);
             }
         });
 
-        btn_how.setBackground(new java.awt.Color(153, 255, 255));
-        btn_how.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        btn_how.setText("HOW TO PLAY");
-        btn_how.addActionListener(new java.awt.event.ActionListener() {
+        btn_Fleft.setBackground(new java.awt.Color(255, 153, 153));
+        btn_Fleft.setText("LEFT");
+        btn_Fleft.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_howActionPerformed(evt);
+                btn_FleftActionPerformed(evt);
             }
         });
+
+        btn_Fright.setBackground(new java.awt.Color(255, 153, 153));
+        btn_Fright.setText("RIGHT");
+        btn_Fright.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_FrightActionPerformed(evt);
+            }
+        });
+
+        btn_Fdown.setBackground(new java.awt.Color(255, 153, 153));
+        btn_Fdown.setText("DOWN");
+        btn_Fdown.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_FdownActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        jLabel3.setText("TRIES :");
+
+        btn_clear.setBackground(new java.awt.Color(153, 153, 255));
+        btn_clear.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        btn_clear.setText("CLEAR");
+        btn_clear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_clearActionPerformed(evt);
+            }
+        });
+
+        lst_moves.setToolTipText("");
+        jScrollPane1.setViewportView(lst_moves);
 
         javax.swing.GroupLayout pnl_infoLayout = new javax.swing.GroupLayout(pnl_info);
         pnl_info.setLayout(pnl_infoLayout);
         pnl_infoLayout.setHorizontalGroup(
             pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btn_how, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(lbl_Interval, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btn_New, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(lbl_Turn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(lbl_Note, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(pnl_infoLayout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(32, 32, 32))
+            .addGroup(pnl_infoLayout.createSequentialGroup()
+                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnl_infoLayout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lbl_Turn, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnl_infoLayout.createSequentialGroup()
+                        .addGap(116, 116, 116)
+                        .addComponent(btn_clear, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnl_infoLayout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(pnl_infoLayout.createSequentialGroup()
+                                .addComponent(btn_Mdown)
+                                .addGap(1, 1, 1))
+                            .addComponent(btn_Mup, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
+                                .addComponent(btn_Fdown)
+                                .addGap(31, 31, 31))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
+                                .addComponent(btn_Fup, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(32, 32, 32))))
+                    .addGroup(pnl_infoLayout.createSequentialGroup()
+                        .addComponent(btn_Mleft, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btn_Mright, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                        .addComponent(btn_Fleft)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_Fright)))
+                .addContainerGap())
+            .addGroup(pnl_infoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btn_Start, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         pnl_infoLayout.setVerticalGroup(
             pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_infoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btn_New, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(lbl_Turn))
+                .addGap(1, 1, 1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btn_clear)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_Fup, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btn_Mup, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbl_Turn)
-                .addGap(18, 18, 18)
-                .addComponent(lbl_Note, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(54, 54, 54)
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_Mleft)
+                    .addComponent(btn_Mright)
+                    .addComponent(btn_Fleft)
+                    .addComponent(btn_Fright))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbl_Interval)
-                .addGap(39, 39, 39)
-                .addComponent(btn_how, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_Mdown)
+                    .addComponent(btn_Fdown))
+                .addGap(18, 18, 18)
+                .addComponent(btn_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -447,9 +630,10 @@ public class TBoard extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(pnl_Board, javax.swing.GroupLayout.DEFAULT_SIZE, 880, Short.MAX_VALUE)
+                .addComponent(pnl_Board, javax.swing.GroupLayout.PREFERRED_SIZE, 852, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnl_info, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(pnl_info, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -460,14 +644,82 @@ public class TBoard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btn_NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_NewActionPerformed
+    private void btn_StartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_StartActionPerformed
         beginbattle();
-    }//GEN-LAST:event_btn_NewActionPerformed
+    }//GEN-LAST:event_btn_StartActionPerformed
 
-    private void btn_howActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_howActionPerformed
+    private void btn_FupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FupActionPerformed
+      int totalmove =  lst_moves.getModel().getSize() ;
+        
+     if(totalmove < 15){
+        model.addElement("Fire UP" );  
+        }   // TODO add your handling code here:
+    }//GEN-LAST:event_btn_FupActionPerformed
 
+    private void btn_MupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MupActionPerformed
+     int totalmove =  lst_moves.getModel().getSize() ;
+        
+     if(totalmove < 15){
+        model.addElement("UP" );  
+        }
+    }//GEN-LAST:event_btn_MupActionPerformed
 
-    }//GEN-LAST:event_btn_howActionPerformed
+    private void btn_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_clearActionPerformed
+        int totalmove =  lst_moves.getModel().getSize() ;
+        
+     for(int i = 0 ; i <  totalmove; i++){
+        model.remove(0);
+     }
+        
+    }//GEN-LAST:event_btn_clearActionPerformed
+
+    private void btn_MleftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MleftActionPerformed
+ int totalmove =  lst_moves.getModel().getSize() ;
+        
+     if(totalmove < 15){
+        model.addElement("LEFT" );  
+        }       
+    }//GEN-LAST:event_btn_MleftActionPerformed
+
+    private void btn_MrightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MrightActionPerformed
+ int totalmove =  lst_moves.getModel().getSize() ;
+        
+     if(totalmove < 15){
+        model.addElement("RIGHT" );  
+        }       
+    }//GEN-LAST:event_btn_MrightActionPerformed
+
+    private void btn_MdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MdownActionPerformed
+         int totalmove =  lst_moves.getModel().getSize() ;
+        
+     if(totalmove < 15){
+        model.addElement("RIGHT" );  
+        }    
+    }//GEN-LAST:event_btn_MdownActionPerformed
+
+    private void btn_FleftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FleftActionPerformed
+  int totalmove =  lst_moves.getModel().getSize() ;
+        
+     if(totalmove < 15){
+        model.addElement("Fire LEFT" );  
+        }        
+    }//GEN-LAST:event_btn_FleftActionPerformed
+
+    private void btn_FrightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FrightActionPerformed
+          int totalmove =  lst_moves.getModel().getSize() ;
+        
+     if(totalmove < 15){
+        model.addElement("Fire Right" );  
+        }  
+    }//GEN-LAST:event_btn_FrightActionPerformed
+
+    private void btn_FdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FdownActionPerformed
+         int totalmove =  lst_moves.getModel().getSize() ;
+        
+     if(totalmove < 15){
+        model.addElement("Fire DOWN" );  
+        }  
+    }//GEN-LAST:event_btn_FdownActionPerformed
 
     /**
      * @param args the command line arguments
@@ -506,13 +758,22 @@ public class TBoard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_New;
-    private javax.swing.JButton btn_how;
+    private javax.swing.JButton btn_Fdown;
+    private javax.swing.JButton btn_Fleft;
+    private javax.swing.JButton btn_Fright;
+    private javax.swing.JButton btn_Fup;
+    private javax.swing.JButton btn_Mdown;
+    private javax.swing.JButton btn_Mleft;
+    private javax.swing.JButton btn_Mright;
+    private javax.swing.JButton btn_Mup;
+    private javax.swing.JButton btn_Start;
+    private javax.swing.JButton btn_clear;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel lbl_Interval;
-    private javax.swing.JLabel lbl_Note;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_Turn;
+    private javax.swing.JList lst_moves;
     private javax.swing.JPanel pnl_Board;
     private javax.swing.JPanel pnl_info;
     // End of variables declaration//GEN-END:variables

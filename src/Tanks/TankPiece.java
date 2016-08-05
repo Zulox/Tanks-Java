@@ -56,7 +56,7 @@ public class TankPiece {
     //check wheter the new spot is valid move for individual pieces
     public boolean ValidMove(int pmove) {
         
-        if( (pmove >= 0 ) && (pmove <= 9 )){
+        if( (pmove >= 0 ) && (pmove <= 7 )){
         return true;
         }
         return false;
