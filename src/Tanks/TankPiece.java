@@ -114,22 +114,52 @@ public class TankPiece {
         return false;
     }
     
-    public boolean FireRight( Spots[][] spotz) {
-        int currentX = this.getX() + 1;
-        int y = this.getY();
+    
+    public boolean FireUp( Spots[][] spotz) {
+        int tempY = this.getY();
+        int tempX = this.getX();
+        tempY-= 1;
         
-        
-        for(int x = currentX ; x <= 10 ; x++){
-           
-            if(spotz[y][x].isOccupied()){
-                return true;
-            }
-            
+        if( ( ValidMove(tempY) ) &&  spotz[tempY][tempX].isOccupied() ){            
+            return true;
         }
-        
-        
         return false;
     }
+    
+    public boolean FireRight( Spots[][] spotz) {
+        int tempY = this.getY();
+        int tempX = this.getX();
+        tempX+= 1;
+        
+        if( ValidMove(tempX) &&  (spotz[tempY][tempX].isOccupied()) ){            
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean FireDown( Spots[][] spotz) {
+        int tempY = this.getY();
+        int tempX = this.getX();
+        tempY+= 1;
+        
+        if( ( ValidMove(tempY) ) &&  spotz[tempY][tempX].isOccupied() ){            
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean FireLeft( Spots[][] spotz) {
+        int tempY = this.getY();
+        int tempX = this.getX();
+        tempX+= 1;
+        
+        if( ( ValidMove(tempX) ) &&  ( spotz[tempY][tempX].isOccupied() ) ){            
+            return true;
+        }
+        return false;
+    }
+
+
 
   
 }

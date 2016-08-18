@@ -21,13 +21,17 @@ import javax.imageio.ImageIO;
 import java.util.Timer;
 
 public class TBoard extends javax.swing.JFrame {
-   
-    DefaultListModel model = new DefaultListModel();    
+
+    DefaultListModel model = new DefaultListModel();
     private JButton[][] btn = new JButton[8][8];
     private Spots[][] spotz = new Spots[8][8];
+    private ArrayList<Integer> aimoves = new ArrayList<Integer>();
     private ArrayList<Integer> moves = new ArrayList<Integer>();
     private ArrayList<Integer> pmoves = new ArrayList<Integer>();
-    private boolean win = false;
+    private boolean playerWin = false;
+    private boolean AIWin = false;
+    private int tries = 1;
+    private int listpos = 0;
     Timer t;
     TimerTask tt;
 
@@ -35,7 +39,7 @@ public class TBoard extends javax.swing.JFrame {
     public int P2tankX;
     public int P1tankY;
     public int P1tankX;
-  
+
     public boolean playerTurn = false;
 
     //Contstructor Run all function 
@@ -45,6 +49,8 @@ public class TBoard extends javax.swing.JFrame {
         addbutton();
         initializePiece();
         maskingButton();
+        
+        generateAImoves();
     }
 
     //Add button to the JFrame 10*10 as the board
@@ -58,7 +64,7 @@ public class TBoard extends javax.swing.JFrame {
         }
     }
 
-    private void initializePiece(){
+    private void initializePiece() {
 
         for (int y = 0; y <= 7; y++) {
             for (int x = 0; x <= 7; x++) {
@@ -69,6 +75,26 @@ public class TBoard extends javax.swing.JFrame {
         spotz[0][0].occupySpot(new TankPiece(2, 0, 0, 2));
         spotz[7][7].occupySpot(new TankPiece(1, 7, 7, 1));
 
+    }
+
+    private void REinitializePiece() {
+
+        for (int y = 0; y <= 7; y++) {
+            for (int x = 0; x <= 7; x++) {
+                spotz[y][x].DeletePiece();
+            }
+        }
+
+        spotz[0][0].occupySpot(new TankPiece(2, 0, 0, 2));
+        spotz[7][7].occupySpot(new TankPiece(1, 7, 7, 1));
+
+    }
+    
+    private void resetboard(){
+    
+            REinitializePiece();
+        maskingButton();
+    
     }
 
     private void maskingButton() {
@@ -93,36 +119,36 @@ public class TBoard extends javax.swing.JFrame {
                     btn[y][x].setIcon(null);
                 }
             }
-        }        
+        }
     }
 
     private void beginbattle() {
-        // AIMoves();
+        /* 
         moves.add(2);
-        moves.add(2);
-        moves.add(2);
+        moves.add(3);
         moves.add(2);
         moves.add(2);
         moves.add(2);
         moves.add(3);
         moves.add(3);
         moves.add(3);
-        moves.add(3);
-        moves.add(3);
-        
-        
+        moves.add(6);
+        moves.add(1);
+        moves.add(1);
+
+        pmoves.add(1);
+        pmoves.add(4);
         pmoves.add(4);
         pmoves.add(1);
         pmoves.add(1);
         pmoves.add(1);
+        pmoves.add(4);
+        pmoves.add(4);
+        pmoves.add(4);
         pmoves.add(1);
         pmoves.add(1);
-        pmoves.add(1);
-        pmoves.add(1);
-        pmoves.add(3);
-        pmoves.add(2);
-        pmoves.add(1);
-        
+        */
+
         P2tankY = spotz[0][0].piece.getY();
         P2tankX = spotz[0][0].piece.getX();
 
@@ -137,12 +163,16 @@ public class TBoard extends javax.swing.JFrame {
             public void run() {
 
                 if ((moves.size() != 0) || (pmoves.size() != 0)) {
-                        PlayerTurn();
-                        AITurn();                  
+                    PlayerTurn();
+                    AITurn();
+                    
                 } else {
                     t.cancel();
                     tt.cancel();
-                    lbl_Turn.setText("Yolo Habis");
+                    JOptionPane.showMessageDialog(null, "You Failed to destroy the enemy tank", "TRY AGAIN", JOptionPane.PLAIN_MESSAGE);
+                    tries++;
+                    lbl_Tries.setText("" + tries);
+                    resetboard();
                 }
 
             }
@@ -153,9 +183,6 @@ public class TBoard extends javax.swing.JFrame {
     }
 
     private void AITurn() {
-
-       
-      //  lbl_Turn.setText("Yolo" + moves.size());
 
         int moving = moves.get(0);
         moves.remove(0);
@@ -168,10 +195,9 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P2tankY][P2tankX].releaseSpot();
                     MovingAvatar(P2tankY, P2tankX, P2tankY - 1, P2tankX);
                     P2tankY -= 1;
-                }
-                else{
+                } else {
                     spotz[P2tankY][P2tankX].piece.setState(moving);
-                     StaticAvatar(P2tankY, P2tankX);
+                    StaticAvatar(P2tankY, P2tankX);
                 }
                 ;
                 break;
@@ -182,11 +208,10 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P2tankY][P2tankX].releaseSpot();
                     MovingAvatar(P2tankY, P2tankX, P2tankY, P2tankX + 1);
                     P2tankX += 1;
-                }
-                else{
+                } else {
                     spotz[P2tankY][P2tankX].piece.setState(moving);
                     StaticAvatar(P2tankY, P2tankX);
-                            
+
                 }
                 ;
                 break;
@@ -197,11 +222,10 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P2tankY][P2tankX].releaseSpot();
                     MovingAvatar(P2tankY, P2tankX, P2tankY + 1, P2tankX);
                     P2tankY += 1;
-                }
-                else{
-                   spotz[P2tankY][P2tankX].piece.setState(moving);
+                } else {
+                    spotz[P2tankY][P2tankX].piece.setState(moving);
                     StaticAvatar(P2tankY, P2tankX);
-                     
+
                 }
                 ;
                 break;
@@ -212,25 +236,82 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P2tankY][P2tankX].releaseSpot();
                     MovingAvatar(P2tankY, P2tankX, P2tankY, P2tankX - 1);
                     P2tankX -= 1;
-                }
-                else{
+                } else {
                     spotz[P2tankY][P2tankX].piece.setState(moving);
                     StaticAvatar(P2tankY, P2tankX);
-                  
+
                 }
-          
+                ;
+                break;
+            case 5:
+                spotz[P2tankY][P2tankX].piece.setState(moving);
+                StaticAvatar(P2tankY, P2tankX);
 
-            ;
-            break;
+                if (spotz[P2tankY][P2tankX].piece.FireUp(spotz)) {
+                    AIWin = true;
+                    JOptionPane.showMessageDialog(null, "AI tank shot you down", "TRY AGAIN", JOptionPane.PLAIN_MESSAGE);
+                    t.cancel();
+                    tt.cancel();
+                    tries++;
+                    lbl_Tries.setText("" + tries);
+                    resetboard();
+                }
+                ;
+                break;
+            case 6:
+                spotz[P2tankY][P2tankX].piece.setState(moving);
+                StaticAvatar(P2tankY, P2tankX);
 
+                if (spotz[P2tankY][P2tankX].piece.FireRight(spotz)) {
+                    AIWin = true;
+                    JOptionPane.showMessageDialog(null, "AI tank shot you down", "TRY AGAIN", JOptionPane.PLAIN_MESSAGE);
+                    t.cancel();
+                    tt.cancel();
+                    tries++;
+                    lbl_Tries.setText("" + tries);
+                    resetboard();
+                }
+                ;
+                break;
+            case 7:
+                spotz[P2tankY][P2tankX].piece.setState(moving);
+                StaticAvatar(P2tankY, P2tankX);
+
+                if (spotz[P2tankY][P2tankX].piece.FireDown(spotz)) {
+                    AIWin = true;
+                    JOptionPane.showMessageDialog(null, "AI tank shot you down", "TRY AGAIN", JOptionPane.PLAIN_MESSAGE);
+                    t.cancel();
+                    tt.cancel();
+                    tries++;
+                    lbl_Tries.setText("" + tries);
+                    resetboard();
+                }
+                ;
+                break;
+            case 8:
+                spotz[P2tankY][P2tankX].piece.setState(moving);
+                StaticAvatar(P2tankY, P2tankX);
+
+                if (spotz[P2tankY][P2tankX].piece.FireLeft(spotz)) {
+                    AIWin = true;
+                    JOptionPane.showMessageDialog(null, "AI tank shot you down", "TRY AGAIN", JOptionPane.PLAIN_MESSAGE);
+                    t.cancel();
+                    tt.cancel();
+                    tries++;
+                    lbl_Tries.setText("" + tries);
+                    resetboard();
+                }
+                ;
+                break;
         }
-
     }
 
     private void PlayerTurn() {
-       
-        lbl_Turn.setText("Yolo" + moves.size());
 
+        
+        lst_moves.setSelectedIndex(listpos);
+        listpos++;
+        
         int moving = pmoves.get(0);
         pmoves.remove(0);
         switch (moving) {
@@ -242,12 +323,11 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P1tankY][P1tankX].releaseSpot();
                     MovingAvatar(P1tankY, P1tankX, P1tankY - 1, P1tankX);
                     P1tankY -= 1;
-                   
-                }
-                else{
+
+                } else {
                     spotz[P1tankY][P1tankX].piece.setState(moving);
-                   StaticAvatar(P1tankY, P1tankX);
-                   
+                    StaticAvatar(P1tankY, P1tankX);
+
                 }
                 ;
                 break;
@@ -258,12 +338,11 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P1tankY][P1tankX].releaseSpot();
                     MovingAvatar(P1tankY, P1tankX, P1tankY, P1tankX + 1);
                     P1tankX += 1;
-                      
-                }
-                else{
+
+                } else {
                     spotz[P1tankY][P1tankX].piece.setState(moving);
-                   StaticAvatar(P1tankY, P1tankX);
-                        
+                    StaticAvatar(P1tankY, P1tankX);
+
                 }
                 ;
                 break;
@@ -274,12 +353,11 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P1tankY][P1tankX].releaseSpot();
                     MovingAvatar(P1tankY, P1tankX, P1tankY + 1, P1tankX);
                     P1tankY += 1;
-                   
-                }
-                else{
+
+                } else {
                     spotz[P1tankY][P1tankX].piece.setState(moving);
-                   StaticAvatar(P1tankY, P1tankX);
-                  
+                    StaticAvatar(P1tankY, P1tankX);
+
                 }
                 ;
                 break;
@@ -290,33 +368,64 @@ public class TBoard extends javax.swing.JFrame {
                     spotz[P1tankY][P1tankX].releaseSpot();
                     MovingAvatar(P1tankY, P1tankX, P1tankY, P1tankX - 1);
                     P1tankX -= 1;
-                    
-                }
-                else{
+
+                } else {
                     spotz[P1tankY][P1tankX].piece.setState(moving);
-                   StaticAvatar(P1tankY, P1tankX);
-                    
+                    StaticAvatar(P1tankY, P1tankX);
+
                 }
-           
-            ;
-            break;
 
-        }
+                ;
+                break;
+            case 5:
+                spotz[P1tankY][P1tankX].piece.setState(moving);
+                StaticAvatar(P1tankY, P1tankX);
 
-    }
+                if (spotz[P1tankY][P1tankX].piece.FireUp(spotz)) {
+                    playerWin = true;
+                    JOptionPane.showMessageDialog(null, "You manage to take down the AI Tank", "YOU WIN", JOptionPane.PLAIN_MESSAGE);
+                    t.cancel();
+                    tt.cancel();
+                }
+                ;
+                break;
+            case 6:
+                spotz[P1tankY][P1tankX].piece.setState(moving);
+                StaticAvatar(P1tankY, P1tankX);
 
-    private void FireTorpedo(int Y1, int X1, int dir) {
+                if (spotz[P1tankY][P1tankX].piece.FireRight(spotz)) {
+                    playerWin = true;
+                    JOptionPane.showMessageDialog(null, "You manage to take down the AI Tank", "YOU WIN", JOptionPane.PLAIN_MESSAGE);
+                    t.cancel();
+                    tt.cancel();
+                }
+                ;
+                break;
+            case 7:
+                spotz[P1tankY][P1tankX].piece.setState(moving);
+                StaticAvatar(P1tankY, P1tankX);
 
-        if (spotz[Y1][X1].isOccupied()) {
-            int teams = spotz[Y1][X1].piece.getTeam();
+                if (spotz[P1tankY][P1tankX].piece.FireDown(spotz)) {
+                    playerWin = true;
+                    JOptionPane.showMessageDialog(null, "You manage to take down the AI Tank", "YOU WIN", JOptionPane.PLAIN_MESSAGE);
+                    t.cancel();
+                    tt.cancel();
+                }
+                ;
+                break;
+            case 8:
+                spotz[P1tankY][P1tankX].piece.setState(moving);
+                StaticAvatar(P1tankY, P1tankX);
 
-            try {
-                Image img = ImageIO.read(getClass().getResource("/Tank/Image/Tank" + teams + dir + ".png"));
-                Image newimg = img.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
-                btn[Y1][X1].setIcon(new ImageIcon(newimg));
+                if (spotz[P1tankY][P1tankX].piece.FireLeft(spotz)) {
+                    playerWin = true;
+                    JOptionPane.showMessageDialog(null, "You manage to take down the AI Tank", "YOU WIN", JOptionPane.PLAIN_MESSAGE);
+                    t.cancel();
+                    tt.cancel();
+                }
+                ;
+                break;
 
-            } catch (IOException ex) {
-            }
         }
 
     }
@@ -339,8 +448,8 @@ public class TBoard extends javax.swing.JFrame {
         btn[Y1][X1].setIcon(null);
 
     }
-    
-     private void StaticAvatar(int Y1, int X1) {
+
+    private void StaticAvatar(int Y1, int X1) {
 
         if (spotz[Y1][X1].isOccupied()) {
             int teams = spotz[Y1][X1].piece.getTeam();
@@ -355,102 +464,132 @@ public class TBoard extends javax.swing.JFrame {
             }
         }
 
-      
-
     }
 
-    private void AIMoves() {
+    private void generateAImoves() {
 
-        Random rn = new Random();
+        //Random rn = new Random();
 
         int randomNum = 0;
         int y = 0;
         int x = 0;
         int lastspot = 0;
 
-        while ((moves.size() < 5)) {
-            y = spotz[0][0].piece.getY();
-            x = spotz[0][0].piece.getX();
+        while ((aimoves.size() < 18)) {
+           // y = spotz[0][0].piece.getY();
+           // x = spotz[0][0].piece.getX();
 
-            randomNum = rn.nextInt((4 - 1) + 1) + 1;
+            
+            randomNum = getRandomInteger(10, 1);
+            //randomNum = rn.nextInt((8 - 1) + 1) + 1;
 
             switch (randomNum) {
                 case 1:
-                    if (spotz[0][0].piece.MoveUp(spotz) && lastspot != 3) {
-                        moves.add(1);
-                        lastspot = 1;
-                    }
+                    //if (spotz[0][0].piece.MoveUp(spotz) && lastspot != 3) {
+                         aimoves.add(1);
+                    //    lastspot = 1;
+                    // }
                     ;
                     break;
                 case 2:
-                    if (spotz[0][0].piece.MoveRight(spotz) && lastspot != 4) {
-                        moves.add(2);
-                        lastspot = 2;
-                    }
+                   // if (spotz[0][0].piece.MoveRight(spotz) && lastspot != 4) {
+                        aimoves.add(2);
+                   //     lastspot = 2;
+                   // }
                     ;
                     break;
                 case 3:
-                    if (spotz[0][0].piece.MoveDown(spotz) && lastspot != 1) {
-                        moves.add(3);
-                        lastspot = 3;
-                    }
+                   // if (spotz[0][0].piece.MoveDown(spotz) && lastspot != 1) {
+                        aimoves.add(3);
+                   //    lastspot = 3;
+                   // }
                     ;
                     break;
                 case 4:
-                    if (spotz[0][0].piece.MoveLeft(spotz) && lastspot != 2) {
-                        moves.add(4);
-                        lastspot = 4;
-                    }
+                   // if (spotz[0][0].piece.MoveLeft(spotz) && lastspot != 2) {
+                        aimoves.add(4);
+                   //     lastspot = 4;
+                   // }
                     ;
                     break;
-
+                case 5:
+                    aimoves.add(5);                                     
+                    ;
+                    break;
+                case 6:
+                    aimoves.add(6);                                     
+                    ;
+                    break;
+                case 7:
+                    aimoves.add(7);                                     
+                    ;
+                    break;        
+                case 8:
+                    aimoves.add(8);                                     
+                    ;
+                    break; 
             }
+           // spotz[0][0].piece.setY(0);
+          //  spotz[0][0].piece.setX(0);          
+        }
+    }
+   
+    public static int getRandomInteger(int maximum, int minimum){
+       return ((int) (Math.random()*(maximum - minimum))) + minimum; 
+    }
 
-            spotz[0][0].piece.setY(0);
-            spotz[0][0].piece.setX(0);
 
-            System.out.println("Y :  " + y + "    X :  " + x);
 
+
+    
+    private void CopyAIMove(){
+        moves.clear();
+        
+        for(int i = 0 ; i < 18 ; i++){
+        moves.add(aimoves.get(i));
+        }
+
+        for(int i = 0 ; i < 18 ; i++){
+        System.out.println("" + moves.get(i));
         }
 
     }
-    
-    private void generatePlayermove(){
-    
-        String placeholder; 
-        for(int i= 0 ; i < 18; i++){
-        
+
+    private void generatePlayermove() {
+
+        String placeholder;
+        for (int i = 0; i < 18; i++) {
+
             placeholder = (String) model.getElementAt(i);
-            
-            if(placeholder.length() < 7){
-                
-                if(placeholder.equals("UP")){
-                   pmoves.add(1);
+
+            if (placeholder.length() < 7) {
+
+                if (placeholder.equals("UP")) {
+                    pmoves.add(1);
                 }
-                if(placeholder.equals("RIGHT")){
-                   pmoves.add(2);
+                if (placeholder.equals("RIGHT")) {
+                    pmoves.add(2);
                 }
-                if(placeholder.equals("DOWN")){
-                   pmoves.add(3);
+                if (placeholder.equals("DOWN")) {
+                    pmoves.add(3);
                 }
-                if(placeholder.equals("LEFT")){
-                   pmoves.add(4);
+                if (placeholder.equals("LEFT")) {
+                    pmoves.add(4);
                 }
-                
-            }
-            else{
-                if(placeholder.equals("Fire UP")){
-                   pmoves.add(5);
+
+            } else {
+                if (placeholder.equals("Fire UP")) {
+                    pmoves.add(5);
                 }
-                if(placeholder.equals("Fire RIGHT")){
-                   pmoves.add(6);
+                if (placeholder.equals("Fire RIGHT")) {
+                    pmoves.add(6);
                 }
-                if(placeholder.equals("Fire DOWN")){
-                   pmoves.add(7);
+                if (placeholder.equals("Fire DOWN")) {
+                    pmoves.add(7);
                 }
-                if(placeholder.equals("Fire LEFT")){
-                   pmoves.add(8);
-                } 
+                if (placeholder.equals("Fire LEFT")) {
+                    pmoves.add(8);
+                }
             }
         }
     }
@@ -466,7 +605,7 @@ public class TBoard extends javax.swing.JFrame {
 
         pnl_Board = new javax.swing.JPanel();
         pnl_info = new javax.swing.JPanel();
-        lbl_Turn = new javax.swing.JLabel();
+        lbl_Tries = new javax.swing.JLabel();
         btn_Start = new javax.swing.JButton();
         btn_Mleft = new javax.swing.JButton();
         btn_Mright = new javax.swing.JButton();
@@ -488,10 +627,10 @@ public class TBoard extends javax.swing.JFrame {
         pnl_Board.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         pnl_Board.setLayout(new java.awt.GridLayout(8, 8));
 
-        lbl_Turn.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
-        lbl_Turn.setForeground(new java.awt.Color(255, 51, 51));
-        lbl_Turn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbl_Turn.setText("1");
+        lbl_Tries.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        lbl_Tries.setForeground(new java.awt.Color(255, 51, 51));
+        lbl_Tries.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbl_Tries.setText("1");
 
         btn_Start.setBackground(new java.awt.Color(204, 255, 204));
         btn_Start.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
@@ -604,11 +743,12 @@ public class TBoard extends javax.swing.JFrame {
                         .addGap(38, 38, 38)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lbl_Turn, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lbl_Tries, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(pnl_infoLayout.createSequentialGroup()
                         .addGap(116, 116, 116)
-                        .addComponent(btn_clear, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(btn_clear, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(10, 10, 10))
             .addComponent(jScrollPane1)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
                 .addContainerGap()
@@ -648,7 +788,7 @@ public class TBoard extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(lbl_Turn))
+                    .addComponent(lbl_Tries))
                 .addGap(1, 1, 1)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -696,92 +836,94 @@ public class TBoard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_StartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_StartActionPerformed
-      
-        /*int totalmove =  lst_moves.getModel().getSize() ;
+         listpos = 0;
+         int totalmove =  lst_moves.getModel().getSize() ;
         
-        if(totalmove == 18){
-            generatePlayermove();
-            
-            for(int i = 0 ; i < 18 ; i++){
-                Integer yolo = pmoves.get(i);
-            System.out.println( yolo +  " " );            
-            }
-        }
-        */
-        beginbattle();
+         if(totalmove == 18){
+         pmoves.clear();
+         generatePlayermove();
+         CopyAIMove();
+         beginbattle();
+         }
+         else{
+         JOptionPane.showMessageDialog(null, "Please enter 18 mvoes input", "INVALID", JOptionPane.PLAIN_MESSAGE);
+         }
+        
+        
+       
     }//GEN-LAST:event_btn_StartActionPerformed
 
     private void btn_FupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FupActionPerformed
-      int totalmove =  lst_moves.getModel().getSize() ;
-        
-     if(totalmove < 18){
-        model.addElement("Fire UP" );  
+        int totalmove = lst_moves.getModel().getSize();
+
+        if (totalmove < 18) {
+            model.addElement("Fire UP");
         }   // TODO add your handling code here:
     }//GEN-LAST:event_btn_FupActionPerformed
 
     private void btn_MupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MupActionPerformed
-     int totalmove =  lst_moves.getModel().getSize() ;
-        
-     if(totalmove < 18){
-        model.addElement("UP" );  
+        int totalmove = lst_moves.getModel().getSize();
+
+        if (totalmove < 18) {
+            model.addElement("UP");
         }
     }//GEN-LAST:event_btn_MupActionPerformed
 
     private void btn_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_clearActionPerformed
-        int totalmove =  lst_moves.getModel().getSize() ;
-        
-     for(int i = 0 ; i <  totalmove; i++){
-        model.remove(0);       
-     }
-        
+        int totalmove = lst_moves.getModel().getSize();
+
+        for (int i = 0; i < totalmove; i++) {
+            model.remove(0);
+        }
+
     }//GEN-LAST:event_btn_clearActionPerformed
 
     private void btn_MleftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MleftActionPerformed
- int totalmove =  lst_moves.getModel().getSize() ;
-        
-     if(totalmove < 18){
-        model.addElement("LEFT" );  
-        }       
+        int totalmove = lst_moves.getModel().getSize();
+
+        if (totalmove < 18) {
+            model.addElement("LEFT");
+        }
     }//GEN-LAST:event_btn_MleftActionPerformed
 
     private void btn_MrightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MrightActionPerformed
- int totalmove =  lst_moves.getModel().getSize() ;
-        
-     if(totalmove < 18){
-        model.addElement("RIGHT" );  
-        }       
+        int totalmove = lst_moves.getModel().getSize();
+
+        if (totalmove < 18) {
+            model.addElement("RIGHT");
+        }
     }//GEN-LAST:event_btn_MrightActionPerformed
 
     private void btn_MdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MdownActionPerformed
-         int totalmove =  lst_moves.getModel().getSize() ;
-        
-     if(totalmove < 18){
-        model.addElement("DOWN" );  
-        }    
+        int totalmove = lst_moves.getModel().getSize();
+
+        if (totalmove < 18) {
+            model.addElement("DOWN");
+        }
     }//GEN-LAST:event_btn_MdownActionPerformed
 
     private void btn_FleftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FleftActionPerformed
-  int totalmove =  lst_moves.getModel().getSize() ;
-        
-     if(totalmove < 18){
-        model.addElement("Fire LEFT" );  
-        }        
+        int totalmove = lst_moves.getModel().getSize();
+
+        if (totalmove < 18) {
+            model.addElement("Fire LEFT");
+        }
     }//GEN-LAST:event_btn_FleftActionPerformed
 
     private void btn_FrightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FrightActionPerformed
-          int totalmove =  lst_moves.getModel().getSize() ;
-        
-     if(totalmove < 18){
-        model.addElement("Fire RIGHT" );  
-        }  
+        int totalmove = lst_moves.getModel().getSize();
+
+        if (totalmove < 18) {
+            model.addElement("Fire RIGHT");
+        }
     }//GEN-LAST:event_btn_FrightActionPerformed
 
     private void btn_FdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FdownActionPerformed
-         int totalmove =  lst_moves.getModel().getSize() ;
-        
-     if(totalmove < 18){
-        model.addElement("Fire DOWN" );  
-        }  
+        int totalmove = lst_moves.getModel().getSize();
+
+        if (totalmove < 18) {
+            model.addElement("Fire DOWN");
+        }
     }//GEN-LAST:event_btn_FdownActionPerformed
 
     /**
@@ -835,7 +977,7 @@ public class TBoard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lbl_Turn;
+    private javax.swing.JLabel lbl_Tries;
     private javax.swing.JList lst_moves;
     private javax.swing.JPanel pnl_Board;
     private javax.swing.JPanel pnl_info;
