@@ -27,6 +27,7 @@ public class TBoard extends javax.swing.JFrame {
     private Spots[][] spotz = new Spots[8][8];
     private ArrayList<Integer> moves = new ArrayList<Integer>();
     private ArrayList<Integer> pmoves = new ArrayList<Integer>();
+    private boolean win = false;
     Timer t;
     TimerTask tt;
 
@@ -57,7 +58,7 @@ public class TBoard extends javax.swing.JFrame {
         }
     }
 
-    private void initializePiece() {
+    private void initializePiece(){
 
         for (int y = 0; y <= 7; y++) {
             for (int x = 0; x <= 7; x++) {
@@ -92,26 +93,36 @@ public class TBoard extends javax.swing.JFrame {
                     btn[y][x].setIcon(null);
                 }
             }
-        }
-        System.out.println("Yolo");
-
+        }        
     }
 
     private void beginbattle() {
         // AIMoves();
         moves.add(2);
         moves.add(2);
+        moves.add(2);
+        moves.add(2);
+        moves.add(2);
+        moves.add(2);
         moves.add(3);
         moves.add(3);
         moves.add(3);
-
-        pmoves.add(3);
-        pmoves.add(3);
-        pmoves.add(3);
+        moves.add(3);
+        moves.add(3);
+        
+        
+        pmoves.add(4);
         pmoves.add(1);
+        pmoves.add(1);
+        pmoves.add(1);
+        pmoves.add(1);
+        pmoves.add(1);
+        pmoves.add(1);
+        pmoves.add(1);
+        pmoves.add(3);
         pmoves.add(2);
-    
-
+        pmoves.add(1);
+        
         P2tankY = spotz[0][0].piece.getY();
         P2tankX = spotz[0][0].piece.getX();
 
@@ -144,14 +155,14 @@ public class TBoard extends javax.swing.JFrame {
     private void AITurn() {
 
        
-        lbl_Turn.setText("Yolo" + moves.size());
+      //  lbl_Turn.setText("Yolo" + moves.size());
 
         int moving = moves.get(0);
         moves.remove(0);
         switch (moving) {
 
             case 1:
-                if (spotz[P2tankY][P2tankX].piece.MoveUp()) {
+                if (spotz[P2tankY][P2tankX].piece.MoveUp(spotz)) {
                     spotz[P2tankY - 1][P2tankX].occupySpot(spotz[P2tankY][P2tankX].piece);
                     spotz[P2tankY - 1][P2tankX].piece.setState(moving);
                     spotz[P2tankY][P2tankX].releaseSpot();
@@ -165,7 +176,7 @@ public class TBoard extends javax.swing.JFrame {
                 ;
                 break;
             case 2:
-                if (spotz[P2tankY][P2tankX].piece.MoveRight()) {
+                if (spotz[P2tankY][P2tankX].piece.MoveRight(spotz)) {
                     spotz[P2tankY][P2tankX + 1].occupySpot(spotz[P2tankY][P2tankX].piece);
                     spotz[P2tankY][P2tankX + 1].piece.setState(moving);
                     spotz[P2tankY][P2tankX].releaseSpot();
@@ -180,7 +191,7 @@ public class TBoard extends javax.swing.JFrame {
                 ;
                 break;
             case 3:
-                if (spotz[P2tankY][P2tankX].piece.MoveDown()) {
+                if (spotz[P2tankY][P2tankX].piece.MoveDown(spotz)) {
                     spotz[P2tankY + 1][P2tankX].occupySpot(spotz[P2tankY][P2tankX].piece);
                     spotz[P2tankY + 1][P2tankX].piece.setState(moving);
                     spotz[P2tankY][P2tankX].releaseSpot();
@@ -195,7 +206,7 @@ public class TBoard extends javax.swing.JFrame {
                 ;
                 break;
             case 4:
-                if (spotz[P2tankY][P2tankX].piece.MoveLeft()) {
+                if (spotz[P2tankY][P2tankX].piece.MoveLeft(spotz)) {
                     spotz[P2tankY][P2tankX - 1].occupySpot(spotz[P2tankY][P2tankX].piece);
                     spotz[P2tankY][P2tankX - 1].piece.setState(moving);
                     spotz[P2tankY][P2tankX].releaseSpot();
@@ -225,7 +236,7 @@ public class TBoard extends javax.swing.JFrame {
         switch (moving) {
 
             case 1:
-                if (spotz[P1tankY][P1tankX].piece.MoveUp()) {
+                if (spotz[P1tankY][P1tankX].piece.MoveUp(spotz)) {
                     spotz[P1tankY - 1][P1tankX].occupySpot(spotz[P1tankY][P1tankX].piece);
                     spotz[P1tankY - 1][P1tankX].piece.setState(moving);
                     spotz[P1tankY][P1tankX].releaseSpot();
@@ -241,7 +252,7 @@ public class TBoard extends javax.swing.JFrame {
                 ;
                 break;
             case 2:
-                if (spotz[P1tankY][P1tankX].piece.MoveRight()) {
+                if (spotz[P1tankY][P1tankX].piece.MoveRight(spotz)) {
                     spotz[P1tankY][P1tankX + 1].occupySpot(spotz[P1tankY][P1tankX].piece);
                     spotz[P1tankY][P1tankX + 1].piece.setState(moving);
                     spotz[P1tankY][P1tankX].releaseSpot();
@@ -257,7 +268,7 @@ public class TBoard extends javax.swing.JFrame {
                 ;
                 break;
             case 3:
-                if (spotz[P1tankY][P1tankX].piece.MoveDown()) {
+                if (spotz[P1tankY][P1tankX].piece.MoveDown(spotz)) {
                     spotz[P1tankY + 1][P1tankX].occupySpot(spotz[P1tankY][P1tankX].piece);
                     spotz[P1tankY + 1][P1tankX].piece.setState(moving);
                     spotz[P1tankY][P1tankX].releaseSpot();
@@ -273,7 +284,7 @@ public class TBoard extends javax.swing.JFrame {
                 ;
                 break;
             case 4:
-                if (spotz[P1tankY][P1tankX].piece.MoveLeft()) {
+                if (spotz[P1tankY][P1tankX].piece.MoveLeft(spotz)) {
                     spotz[P1tankY][P1tankX - 1].occupySpot(spotz[P1tankY][P1tankX].piece);
                     spotz[P1tankY][P1tankX - 1].piece.setState(moving);
                     spotz[P1tankY][P1tankX].releaseSpot();
@@ -365,28 +376,28 @@ public class TBoard extends javax.swing.JFrame {
 
             switch (randomNum) {
                 case 1:
-                    if (spotz[0][0].piece.MoveUp() && lastspot != 3) {
+                    if (spotz[0][0].piece.MoveUp(spotz) && lastspot != 3) {
                         moves.add(1);
                         lastspot = 1;
                     }
                     ;
                     break;
                 case 2:
-                    if (spotz[0][0].piece.MoveRight() && lastspot != 4) {
+                    if (spotz[0][0].piece.MoveRight(spotz) && lastspot != 4) {
                         moves.add(2);
                         lastspot = 2;
                     }
                     ;
                     break;
                 case 3:
-                    if (spotz[0][0].piece.MoveDown() && lastspot != 1) {
+                    if (spotz[0][0].piece.MoveDown(spotz) && lastspot != 1) {
                         moves.add(3);
                         lastspot = 3;
                     }
                     ;
                     break;
                 case 4:
-                    if (spotz[0][0].piece.MoveLeft() && lastspot != 2) {
+                    if (spotz[0][0].piece.MoveLeft(spotz) && lastspot != 2) {
                         moves.add(4);
                         lastspot = 4;
                     }
@@ -402,6 +413,46 @@ public class TBoard extends javax.swing.JFrame {
 
         }
 
+    }
+    
+    private void generatePlayermove(){
+    
+        String placeholder; 
+        for(int i= 0 ; i < 18; i++){
+        
+            placeholder = (String) model.getElementAt(i);
+            
+            if(placeholder.length() < 7){
+                
+                if(placeholder.equals("UP")){
+                   pmoves.add(1);
+                }
+                if(placeholder.equals("RIGHT")){
+                   pmoves.add(2);
+                }
+                if(placeholder.equals("DOWN")){
+                   pmoves.add(3);
+                }
+                if(placeholder.equals("LEFT")){
+                   pmoves.add(4);
+                }
+                
+            }
+            else{
+                if(placeholder.equals("Fire UP")){
+                   pmoves.add(5);
+                }
+                if(placeholder.equals("Fire RIGHT")){
+                   pmoves.add(6);
+                }
+                if(placeholder.equals("Fire DOWN")){
+                   pmoves.add(7);
+                }
+                if(placeholder.equals("Fire LEFT")){
+                   pmoves.add(8);
+                } 
+            }
+        }
     }
 
     /**
@@ -645,13 +696,25 @@ public class TBoard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_StartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_StartActionPerformed
+      
+        /*int totalmove =  lst_moves.getModel().getSize() ;
+        
+        if(totalmove == 18){
+            generatePlayermove();
+            
+            for(int i = 0 ; i < 18 ; i++){
+                Integer yolo = pmoves.get(i);
+            System.out.println( yolo +  " " );            
+            }
+        }
+        */
         beginbattle();
     }//GEN-LAST:event_btn_StartActionPerformed
 
     private void btn_FupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FupActionPerformed
       int totalmove =  lst_moves.getModel().getSize() ;
         
-     if(totalmove < 15){
+     if(totalmove < 18){
         model.addElement("Fire UP" );  
         }   // TODO add your handling code here:
     }//GEN-LAST:event_btn_FupActionPerformed
@@ -659,7 +722,7 @@ public class TBoard extends javax.swing.JFrame {
     private void btn_MupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MupActionPerformed
      int totalmove =  lst_moves.getModel().getSize() ;
         
-     if(totalmove < 15){
+     if(totalmove < 18){
         model.addElement("UP" );  
         }
     }//GEN-LAST:event_btn_MupActionPerformed
@@ -668,7 +731,7 @@ public class TBoard extends javax.swing.JFrame {
         int totalmove =  lst_moves.getModel().getSize() ;
         
      for(int i = 0 ; i <  totalmove; i++){
-        model.remove(0);
+        model.remove(0);       
      }
         
     }//GEN-LAST:event_btn_clearActionPerformed
@@ -676,7 +739,7 @@ public class TBoard extends javax.swing.JFrame {
     private void btn_MleftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MleftActionPerformed
  int totalmove =  lst_moves.getModel().getSize() ;
         
-     if(totalmove < 15){
+     if(totalmove < 18){
         model.addElement("LEFT" );  
         }       
     }//GEN-LAST:event_btn_MleftActionPerformed
@@ -684,7 +747,7 @@ public class TBoard extends javax.swing.JFrame {
     private void btn_MrightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MrightActionPerformed
  int totalmove =  lst_moves.getModel().getSize() ;
         
-     if(totalmove < 15){
+     if(totalmove < 18){
         model.addElement("RIGHT" );  
         }       
     }//GEN-LAST:event_btn_MrightActionPerformed
@@ -692,15 +755,15 @@ public class TBoard extends javax.swing.JFrame {
     private void btn_MdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MdownActionPerformed
          int totalmove =  lst_moves.getModel().getSize() ;
         
-     if(totalmove < 15){
-        model.addElement("RIGHT" );  
+     if(totalmove < 18){
+        model.addElement("DOWN" );  
         }    
     }//GEN-LAST:event_btn_MdownActionPerformed
 
     private void btn_FleftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FleftActionPerformed
   int totalmove =  lst_moves.getModel().getSize() ;
         
-     if(totalmove < 15){
+     if(totalmove < 18){
         model.addElement("Fire LEFT" );  
         }        
     }//GEN-LAST:event_btn_FleftActionPerformed
@@ -708,15 +771,15 @@ public class TBoard extends javax.swing.JFrame {
     private void btn_FrightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FrightActionPerformed
           int totalmove =  lst_moves.getModel().getSize() ;
         
-     if(totalmove < 15){
-        model.addElement("Fire Right" );  
+     if(totalmove < 18){
+        model.addElement("Fire RIGHT" );  
         }  
     }//GEN-LAST:event_btn_FrightActionPerformed
 
     private void btn_FdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FdownActionPerformed
          int totalmove =  lst_moves.getModel().getSize() ;
         
-     if(totalmove < 15){
+     if(totalmove < 18){
         model.addElement("Fire DOWN" );  
         }  
     }//GEN-LAST:event_btn_FdownActionPerformed

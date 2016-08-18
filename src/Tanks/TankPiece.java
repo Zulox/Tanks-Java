@@ -1,4 +1,4 @@
-/*
+    /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -64,11 +64,12 @@ public class TankPiece {
         
     }
     
-    public boolean MoveUp() {
+    public boolean MoveUp( Spots[][] spotz) {
         int tempY = this.getY();
+        int tempX = this.getX();
         tempY-= 1;
         
-        if(ValidMove(tempY)){
+        if(ValidMove(tempY) && (spotz[tempY][tempX].isOccupied()== false )){
             setY(tempY);
             return true;
         }
@@ -76,34 +77,37 @@ public class TankPiece {
     }
    
 
-    public boolean MoveDown() {
+    public boolean MoveDown( Spots[][] spotz) {
         
         int tempY = this.getY();
+        int tempX = this.getX();
         tempY+= 1;
         
-        if(ValidMove(tempY)){
+        if(ValidMove(tempY) && (spotz[tempY][tempX].isOccupied()== false )){
             setY(tempY);
             return true;
         }
        return false;
     }
     
-    public boolean MoveRight() {
+    public boolean MoveRight( Spots[][] spotz) {
+        int tempY = this.getY();
         int tempX = this.getX();
         tempX+= 1;
         
-        if(ValidMove(tempX)){
+        if(ValidMove(tempX) && (spotz[tempY][tempX].isOccupied()== false )){
             setX(tempX);
               return true;
         }
         return false;
     }
     
-    public boolean MoveLeft() {
+    public boolean MoveLeft( Spots[][] spotz) {
+        int tempY = this.getY();
         int tempX = this.getX();
         tempX-= 1;
         
-        if(ValidMove(tempX)){
+        if(ValidMove(tempX)&& (spotz[tempY][tempX].isOccupied()== false )){
             setX(tempX);
               return true;
         }
