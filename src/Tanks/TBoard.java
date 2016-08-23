@@ -164,7 +164,8 @@ public class TBoard extends javax.swing.JFrame {
 
                 if ((moves.size() != 0) || (pmoves.size() != 0)) {
                     PlayerTurn();
-                    AITurn();
+                    
+                    if(playerWin == false){AITurn();}
                     
                 } else {
                     t.cancel();
@@ -386,6 +387,7 @@ public class TBoard extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "You manage to take down the AI Tank", "YOU WIN", JOptionPane.PLAIN_MESSAGE);
                     t.cancel();
                     tt.cancel();
+                     btn_Start.setEnabled(false);
                 }
                 ;
                 break;
@@ -398,6 +400,7 @@ public class TBoard extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "You manage to take down the AI Tank", "YOU WIN", JOptionPane.PLAIN_MESSAGE);
                     t.cancel();
                     tt.cancel();
+                    btn_Start.setEnabled(false);
                 }
                 ;
                 break;
@@ -410,6 +413,7 @@ public class TBoard extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "You manage to take down the AI Tank", "YOU WIN", JOptionPane.PLAIN_MESSAGE);
                     t.cancel();
                     tt.cancel();
+                    btn_Start.setEnabled(false);
                 }
                 ;
                 break;
@@ -422,6 +426,7 @@ public class TBoard extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "You manage to take down the AI Tank", "YOU WIN", JOptionPane.PLAIN_MESSAGE);
                     t.cancel();
                     tt.cancel();
+                    btn_Start.setEnabled(false);
                 }
                 ;
                 break;
@@ -621,6 +626,8 @@ public class TBoard extends javax.swing.JFrame {
         btn_clear = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         lst_moves = new javax.swing.JList();
+        btn_Stop = new javax.swing.JButton();
+        btn_newGame = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -727,6 +734,21 @@ public class TBoard extends javax.swing.JFrame {
         lst_moves.setToolTipText("");
         jScrollPane1.setViewportView(lst_moves);
 
+        btn_Stop.setBackground(new java.awt.Color(255, 102, 102));
+        btn_Stop.setText("STOP");
+        btn_Stop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_StopActionPerformed(evt);
+            }
+        });
+
+        btn_newGame.setText("NEW GAME");
+        btn_newGame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_newGameActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnl_infoLayout = new javax.swing.GroupLayout(pnl_info);
         pnl_info.setLayout(pnl_infoLayout);
         pnl_infoLayout.setHorizontalGroup(
@@ -738,48 +760,57 @@ public class TBoard extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addGap(32, 32, 32))
             .addGroup(pnl_infoLayout.createSequentialGroup()
-                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnl_infoLayout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lbl_Tries, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(pnl_infoLayout.createSequentialGroup()
-                        .addGap(116, 116, 116)
-                        .addComponent(btn_clear, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(38, 38, 38)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lbl_Tries, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(10, 10, 10))
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnl_infoLayout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGap(43, 43, 43)
+                        .addComponent(btn_Mup, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnl_infoLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(pnl_infoLayout.createSequentialGroup()
-                                .addComponent(btn_Mdown)
-                                .addGap(1, 1, 1))
-                            .addComponent(btn_Mup, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(33, 33, 33)
+                                .addComponent(btn_Mdown))
+                            .addGroup(pnl_infoLayout.createSequentialGroup()
+                                .addComponent(btn_Mleft, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btn_Mright, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
                         .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
                                 .addComponent(btn_Fdown)
                                 .addGap(31, 31, 31))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
-                                .addComponent(btn_Fup, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(32, 32, 32))))
-                    .addGroup(pnl_infoLayout.createSequentialGroup()
-                        .addComponent(btn_Mleft, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btn_Mright, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
-                        .addComponent(btn_Fleft)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_Fright)))
-                .addContainerGap())
+                                .addComponent(btn_Fleft)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btn_Fright)))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
+                        .addComponent(btn_Fup, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(42, 42, 42))))
             .addGroup(pnl_infoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btn_Start, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(pnl_infoLayout.createSequentialGroup()
+                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnl_infoLayout.createSequentialGroup()
+                        .addGap(117, 117, 117)
+                        .addComponent(btn_clear, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(pnl_infoLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btn_Stop, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_newGame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pnl_infoLayout.setVerticalGroup(
@@ -790,8 +821,8 @@ public class TBoard extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(lbl_Tries))
                 .addGap(1, 1, 1)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
                 .addComponent(btn_clear)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -799,21 +830,29 @@ public class TBoard extends javax.swing.JFrame {
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_Fup, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btn_Mup, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
+                    .addComponent(btn_Mup)
+                    .addComponent(btn_Fup, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_Mleft)
-                    .addComponent(btn_Mright)
-                    .addComponent(btn_Fleft)
-                    .addComponent(btn_Fright))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_Mdown)
-                    .addComponent(btn_Fdown))
+                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnl_infoLayout.createSequentialGroup()
+                        .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btn_Fleft)
+                            .addComponent(btn_Fright))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_Fdown))
+                    .addGroup(pnl_infoLayout.createSequentialGroup()
+                        .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btn_Mleft)
+                            .addComponent(btn_Mright))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_Mdown)))
                 .addGap(18, 18, 18)
                 .addComponent(btn_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_Stop, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                    .addComponent(btn_newGame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -926,6 +965,21 @@ public class TBoard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btn_FdownActionPerformed
 
+    private void btn_StopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_StopActionPerformed
+        t.cancel();
+        tt.cancel();
+        JOptionPane.showMessageDialog(null, "Game stopped", "RETRY", JOptionPane.PLAIN_MESSAGE);
+        tries++;
+        lbl_Tries.setText("" + tries);
+        resetboard();        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_StopActionPerformed
+
+    private void btn_newGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_newGameActionPerformed
+        this.dispose();
+
+        new TBoard().setVisible(true);
+    }//GEN-LAST:event_btn_newGameActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -972,7 +1026,9 @@ public class TBoard extends javax.swing.JFrame {
     private javax.swing.JButton btn_Mright;
     private javax.swing.JButton btn_Mup;
     private javax.swing.JButton btn_Start;
+    private javax.swing.JButton btn_Stop;
     private javax.swing.JButton btn_clear;
+    private javax.swing.JButton btn_newGame;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
