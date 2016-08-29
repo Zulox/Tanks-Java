@@ -10,21 +10,17 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Image;
 import javax.swing.*;
-import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import java.util.Timer;
 
 public class TBoard extends javax.swing.JFrame {
 
     DefaultListModel model = new DefaultListModel();
-    private JButton[][] btn = new JButton[8][8];
-    private Spots[][] spotz = new Spots[8][8];
+    private JButton[][] btn = new JButton[10][10];
+    private Spots[][] spotz = new Spots[10][10];
     private ArrayList<Integer> aimoves = new ArrayList<Integer>();
     private ArrayList<Integer> moves = new ArrayList<Integer>();
     private ArrayList<Integer> pmoves = new ArrayList<Integer>();
@@ -42,21 +38,21 @@ public class TBoard extends javax.swing.JFrame {
 
     public boolean playerTurn = false;
 
-    //Contstructor Run all function 
+    //Contstructor that run all function when class is created 
     public TBoard() {
         initComponents();
         lst_moves.setModel(model);
         addbutton();
         initializePiece();
         maskingButton();
-        
+
         generateAImoves();
     }
 
     //Add button to the JFrame 10*10 as the board
     private void addbutton() {
-        for (int y = 0; y <= 7; y++) {
-            for (int x = 0; x <= 7; x++) {
+        for (int y = 0; y <= 9; y++) {
+            for (int x = 0; x <= 9; x++) {
                 btn[y][x] = new JButton();
                 pnl_Board.add(btn[y][x]);
                 btn[y][x].setBackground(new java.awt.Color(255, 255, 255));
@@ -64,45 +60,41 @@ public class TBoard extends javax.swing.JFrame {
         }
     }
 
+    //Put tank on the board
     private void initializePiece() {
 
-        for (int y = 0; y <= 7; y++) {
-            for (int x = 0; x <= 7; x++) {
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
                 spotz[y][x] = new Spots();
             }
         }
 
         spotz[0][0].occupySpot(new TankPiece(2, 0, 0, 2));
-        spotz[7][7].occupySpot(new TankPiece(1, 7, 7, 1));
+        spotz[9][9].occupySpot(new TankPiece(1, 9, 9, 1));
 
     }
 
+    //Clear out the board and re-put the tank
     private void REinitializePiece() {
 
-        for (int y = 0; y <= 7; y++) {
-            for (int x = 0; x <= 7; x++) {
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
                 spotz[y][x].DeletePiece();
             }
         }
 
         spotz[0][0].occupySpot(new TankPiece(2, 0, 0, 2));
-        spotz[7][7].occupySpot(new TankPiece(1, 7, 7, 1));
+        spotz[9][9].occupySpot(new TankPiece(1, 9, 9, 1));
 
     }
-    
-    private void resetboard(){
-    
-            REinitializePiece();
-        maskingButton();
-    
-    }
 
+    //This function find where the tank is located and apply their icon/image
     private void maskingButton() {
         int teams = 0;
         int state = 0;
 
-        for (int y = 0; y <= 7; y++) {
-            for (int x = 0; x <= 7; x++) {
+        for (int y = 0; y <= 9; y++) {
+            for (int x = 0; x <= 9; x++) {
 
                 if (spotz[y][x].isOccupied()) {
                     teams = spotz[y][x].piece.getTeam();
@@ -122,41 +114,24 @@ public class TBoard extends javax.swing.JFrame {
         }
     }
 
-    private void beginbattle() {
-        /* 
-        moves.add(2);
-        moves.add(3);
-        moves.add(2);
-        moves.add(2);
-        moves.add(2);
-        moves.add(3);
-        moves.add(3);
-        moves.add(3);
-        moves.add(6);
-        moves.add(1);
-        moves.add(1);
+    //function to reset the whole board    
+    private void resetboard() {
 
-        pmoves.add(1);
-        pmoves.add(4);
-        pmoves.add(4);
-        pmoves.add(1);
-        pmoves.add(1);
-        pmoves.add(1);
-        pmoves.add(4);
-        pmoves.add(4);
-        pmoves.add(4);
-        pmoves.add(1);
-        pmoves.add(1);
-        */
+        REinitializePiece();
+        maskingButton();
+
+    }
+
+    
+    //The whole battle logic when Start button is clicked
+    private void beginbattle() {
 
         P2tankY = spotz[0][0].piece.getY();
         P2tankX = spotz[0][0].piece.getX();
 
-        P1tankY = spotz[7][7].piece.getY();
-        P1tankX = spotz[7][7].piece.getX();
+        P1tankY = spotz[9][9].piece.getY();
+        P1tankX = spotz[9][9].piece.getX();
 
-        //  Timer timer = new Timer(1000, listener);  
-        //  timer.start();
         t = new Timer();
         tt = new TimerTask() {
             @Override
@@ -164,9 +139,12 @@ public class TBoard extends javax.swing.JFrame {
 
                 if ((moves.size() != 0) || (pmoves.size() != 0)) {
                     PlayerTurn();
-                    
-                    if(playerWin == false){AITurn();}
-                    
+                    System.out.print("Player");
+
+                    if (playerWin == false) {
+                        AITurn();
+                    }                    
+
                 } else {
                     t.cancel();
                     tt.cancel();
@@ -183,6 +161,7 @@ public class TBoard extends javax.swing.JFrame {
 
     }
 
+    //This function handle the movement animation/logic of AI tank
     private void AITurn() {
 
         int moving = moves.get(0);
@@ -307,12 +286,13 @@ public class TBoard extends javax.swing.JFrame {
         }
     }
 
+    //This function handle the movement animation/logic of Player tank
     private void PlayerTurn() {
 
         
         lst_moves.setSelectedIndex(listpos);
         listpos++;
-        
+
         int moving = pmoves.get(0);
         pmoves.remove(0);
         switch (moving) {
@@ -387,7 +367,7 @@ public class TBoard extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "You manage to take down the AI Tank", "YOU WIN", JOptionPane.PLAIN_MESSAGE);
                     t.cancel();
                     tt.cancel();
-                     btn_Start.setEnabled(false);
+                    btn_Start.setEnabled(false);
                 }
                 ;
                 break;
@@ -434,7 +414,8 @@ public class TBoard extends javax.swing.JFrame {
         }
 
     }
-
+    
+    //Handle re-applying appropriate image/icon of the tank IF the tank MOVED!
     private void MovingAvatar(int Y1, int X1, int Y2, int X2) {
 
         if (spotz[Y2][X2].isOccupied()) {
@@ -454,6 +435,7 @@ public class TBoard extends javax.swing.JFrame {
 
     }
 
+    //Handle re-applying appropriate image/icon of the tank IF the tank DID NOT moved!
     private void StaticAvatar(int Y1, int X1) {
 
         if (spotz[Y1][X1].isOccupied()) {
@@ -471,95 +453,93 @@ public class TBoard extends javax.swing.JFrame {
 
     }
 
+    
+    //This function handle the generation of 18 randomized AI move list
     private void generateAImoves() {
 
-        //Random rn = new Random();
-
+   
         int randomNum = 0;
         int y = 0;
         int x = 0;
         int lastspot = 0;
+        
+        randomNum = getRandomInteger(3, 2);
+        aimoves.add(randomNum);
+        lastspot = randomNum;
 
         while ((aimoves.size() < 18)) {
-           // y = spotz[0][0].piece.getY();
-           // x = spotz[0][0].piece.getX();
-
-            
+       
             randomNum = getRandomInteger(10, 1);
-            //randomNum = rn.nextInt((8 - 1) + 1) + 1;
-
+       
             switch (randomNum) {
                 case 1:
-                    //if (spotz[0][0].piece.MoveUp(spotz) && lastspot != 3) {
-                         aimoves.add(1);
-                    //    lastspot = 1;
-                    // }
+                    if(lastspot != 3){
+                    aimoves.add(1); 
+                    lastspot= 1;
+                    }      
                     ;
                     break;
-                case 2:
-                   // if (spotz[0][0].piece.MoveRight(spotz) && lastspot != 4) {
-                        aimoves.add(2);
-                   //     lastspot = 2;
-                   // }
+                case 2:                    
+                    if(lastspot != 4){
+                    aimoves.add(2);
+                    lastspot= 2;
+                    }
                     ;
                     break;
-                case 3:
-                   // if (spotz[0][0].piece.MoveDown(spotz) && lastspot != 1) {
-                        aimoves.add(3);
-                   //    lastspot = 3;
-                   // }
+                case 3:   
+                    if(lastspot != 1){
+                    aimoves.add(3);  
+                    lastspot= 3;
+                    }
                     ;
                     break;
-                case 4:
-                   // if (spotz[0][0].piece.MoveLeft(spotz) && lastspot != 2) {
-                        aimoves.add(4);
-                   //     lastspot = 4;
-                   // }
+                case 4:                    
+                    if(lastspot != 2){
+                    aimoves.add(4);  
+                    lastspot= 4;
+                    }
                     ;
                     break;
                 case 5:
-                    aimoves.add(5);                                     
+                    aimoves.add(5);
                     ;
                     break;
                 case 6:
-                    aimoves.add(6);                                     
+                    aimoves.add(6);
                     ;
                     break;
                 case 7:
-                    aimoves.add(7);                                     
+                    aimoves.add(7);
                     ;
-                    break;        
+                    break;
                 case 8:
-                    aimoves.add(8);                                     
+                    aimoves.add(8);
                     ;
-                    break; 
-            }
-           // spotz[0][0].piece.setY(0);
-          //  spotz[0][0].piece.setX(0);          
+                    break;
+            }       
         }
     }
-   
-    public static int getRandomInteger(int maximum, int minimum){
-       return ((int) (Math.random()*(maximum - minimum))) + minimum; 
+
+    //return random integer
+    public static int getRandomInteger(int maximum, int minimum) {
+        return ((int) (Math.random() * (maximum - minimum))) + minimum;
     }
 
-
-
-
-    
-    private void CopyAIMove(){
+    //copy 18 Generated Aimove from Master Copy to reusable Array (to ensure same AI movement for each reset)
+    private void CopyAIMove() {
         moves.clear();
-        
-        for(int i = 0 ; i < 18 ; i++){
-        moves.add(aimoves.get(i));
+
+        for (int i = 0; i < 18; i++) {
+            moves.add(aimoves.get(i));
         }
 
-        for(int i = 0 ; i < 18 ; i++){
-        System.out.println("" + moves.get(i));
+        for (int i = 0; i < 18; i++) {
+            System.out.println("" + moves.get(i));
         }
 
     }
 
+    //Convert the whole input from the list into command that the tank understand
     private void generatePlayermove() {
 
         String placeholder;
@@ -632,7 +612,7 @@ public class TBoard extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         pnl_Board.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        pnl_Board.setLayout(new java.awt.GridLayout(8, 8));
+        pnl_Board.setLayout(new java.awt.GridLayout(10, 10));
 
         lbl_Tries.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         lbl_Tries.setForeground(new java.awt.Color(255, 51, 51));
@@ -754,34 +734,46 @@ public class TBoard extends javax.swing.JFrame {
         pnl_infoLayout.setHorizontalGroup(
             pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_infoLayout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addGap(32, 32, 32))
+                .addContainerGap()
+                .addComponent(btn_Start, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
             .addGroup(pnl_infoLayout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lbl_Tries, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(10, 10, 10))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_newGame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(pnl_infoLayout.createSequentialGroup()
-                        .addGap(43, 43, 43)
-                        .addComponent(btn_Mup, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(pnl_infoLayout.createSequentialGroup()
+                                .addComponent(btn_Stop, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btn_clear, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(pnl_infoLayout.createSequentialGroup()
+                                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(pnl_infoLayout.createSequentialGroup()
+                                            .addGap(33, 33, 33)
+                                            .addComponent(btn_Mup, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(pnl_infoLayout.createSequentialGroup()
+                                            .addGap(33, 33, 33)
+                                            .addComponent(btn_Mdown))
+                                        .addGroup(pnl_infoLayout.createSequentialGroup()
+                                            .addComponent(btn_Mleft, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(btn_Mright, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(pnl_infoLayout.createSequentialGroup()
+                                        .addGap(23, 23, 23)
+                                        .addComponent(jLabel1)
+                                        .addGap(48, 48, 48)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel2)))
+                        .addGap(32, 32, 32))
                     .addGroup(pnl_infoLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnl_infoLayout.createSequentialGroup()
-                                .addGap(33, 33, 33)
-                                .addComponent(btn_Mdown))
-                            .addGroup(pnl_infoLayout.createSequentialGroup()
-                                .addComponent(btn_Mleft, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btn_Mright, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(lbl_Tries, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
                         .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -795,36 +787,27 @@ public class TBoard extends javax.swing.JFrame {
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
                         .addComponent(btn_Fup, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42))))
-            .addGroup(pnl_infoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btn_Start, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(pnl_infoLayout.createSequentialGroup()
-                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnl_infoLayout.createSequentialGroup()
-                        .addGap(117, 117, 117)
-                        .addComponent(btn_clear, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(pnl_infoLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btn_Stop, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_newGame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(42, 42, 42))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_infoLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20))))
         );
         pnl_infoLayout.setVerticalGroup(
             pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_infoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(lbl_Tries))
+                .addComponent(btn_newGame, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_Tries, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(1, 1, 1)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(btn_clear)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(24, 24, 24)
+                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_Stop, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_clear))
+                .addGap(18, 18, 18)
                 .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
@@ -846,51 +829,33 @@ public class TBoard extends javax.swing.JFrame {
                             .addComponent(btn_Mright))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_Mdown)))
-                .addGap(18, 18, 18)
-                .addComponent(btn_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnl_infoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_Stop, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-                    .addComponent(btn_newGame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(pnl_Board, javax.swing.GroupLayout.PREFERRED_SIZE, 852, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnl_info, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnl_Board, javax.swing.GroupLayout.DEFAULT_SIZE, 850, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(pnl_info, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnl_info, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnl_Board, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnl_Board, javax.swing.GroupLayout.PREFERRED_SIZE, 741, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnl_info, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btn_StartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_StartActionPerformed
-         listpos = 0;
-         int totalmove =  lst_moves.getModel().getSize() ;
-        
-         if(totalmove == 18){
-         pmoves.clear();
-         generatePlayermove();
-         CopyAIMove();
-         beginbattle();
-         }
-         else{
-         JOptionPane.showMessageDialog(null, "Please enter 18 mvoes input", "INVALID", JOptionPane.PLAIN_MESSAGE);
-         }
-        
-        
-       
-    }//GEN-LAST:event_btn_StartActionPerformed
 
     private void btn_FupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FupActionPerformed
         int totalmove = lst_moves.getModel().getSize();
@@ -979,6 +944,22 @@ public class TBoard extends javax.swing.JFrame {
 
         new TBoard().setVisible(true);
     }//GEN-LAST:event_btn_newGameActionPerformed
+
+    //Button Start function that start battling the tank
+    private void btn_StartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_StartActionPerformed
+        listpos = 0;
+        int totalmove = lst_moves.getModel().getSize();
+
+        if (totalmove == 18) {
+            pmoves.clear();
+            generatePlayermove();
+            CopyAIMove();
+            beginbattle();
+        } else {
+            JOptionPane.showMessageDialog(null, "Please enter 18 mvoes input", "INVALID", JOptionPane.PLAIN_MESSAGE);
+        }
+
+    }//GEN-LAST:event_btn_StartActionPerformed
 
     /**
      * @param args the command line arguments
