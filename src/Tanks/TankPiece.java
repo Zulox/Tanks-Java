@@ -69,8 +69,7 @@ public class TankPiece {
         return true;
         }
         return false;
-        
-        
+             
     }
     
     //tank move up logic
