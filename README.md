@@ -3,6 +3,17 @@ This is a game where you will take control of a tank, the main goal of the game 
 you will control the tank by telling it instruction on what kind of moves it would take
 
 
+### Demo
+**[Game Image 1]**             |  **[Game Image 2]**
+:-------------------------:|:-------------------------:
+![Option](http://i.imgur.com/DFG34GG.png)  |  ![Game](http://i.imgur.com/IaOe92l.png)
+
+#Code Location
+Important code location are at :
+
+src->Tanks
+
+
 #How To Play
 The Tank can only move up, down, left or right, and shoot up, down, left or right. The AI sequence is 15 of
 these moves.
@@ -27,7 +38,7 @@ tries.
 
 
 ##HOW TO RUN
-#WARNING YOU NEED NETBEAN IN RODER TO RUN THE PROJECT
+#WARNING YOU NEED NETBEAN IN ORDER TO RUN THE PROJECT
 
 1)Download the whole project file
 
